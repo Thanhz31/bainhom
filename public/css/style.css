@@ -1,0 +1,52 @@
+/* Cấu hình chung cho toàn website */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Biểu tượng giỏ hàng và thông báo số lượng */
+.cart-icon { 
+    position: relative; 
+}
+
+.cart-badge { 
+    position: absolute; 
+    top: -5px; 
+    right: -10px; 
+    font-size: 0.7rem; 
+}
+
+/* Hiệu ứng cho thẻ sản phẩm */
+.product-card { 
+    transition: transform 0.2s; 
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.product-card:hover { 
+    transform: translateY(-5px); 
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important; 
+}
+
+/* Sidebar danh mục */
+.list-group-item.active { 
+    background-color: #dc3545; 
+    border-color: #dc3545; 
+}
+
+.list-group-item:hover:not(.active) {
+    background-color: #f8f9fa;
+    color: #dc3545;
+}
+
+/* Tùy chỉnh footer luôn nằm dưới cùng */
+footer {
+    margin-top: auto;
+}
+
+/* Hình ảnh sản phẩm */
+.card-img-top {
+    border-bottom: 1px solid #eee;
+}
