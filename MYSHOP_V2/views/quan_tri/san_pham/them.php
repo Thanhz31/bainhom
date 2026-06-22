@@ -42,7 +42,7 @@
                     <input type="file" name="image" class="form-control" required>
                 </div>
                 <button type="submit" name="submit" class="btn btn-success w-100 fw-bold py-2">LƯU SẢN PHẨM</button>
-                <a href="index.php?controller=san_pham" class="btn btn-light w-100 mt-2">Hủy bỏ</a>
+                <a href="index.php?controller=san_pham" class="btn btn-light w-100 mt-2">Huỷ bỏ<</a>
             </form>
         </div>
     </div>
