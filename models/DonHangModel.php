@@ -55,7 +55,7 @@ class DonHangModel {
     }
 
     // ==========================================
-    // CÁC HÀM MỚI (Dọn từ Controller sang)
+    // CÁC HÀM QUẢN TRỊ (Đã áp dụng 3 Nguyên Tắc)
     // ==========================================
     public function layTatCa() {
         $result = $this->conn->query("SELECT * FROM orders ORDER BY created_at DESC");
@@ -82,10 +82,51 @@ class DonHangModel {
         return $data;
     }
 
+    // [ĐÃ SỬA] Hàm cập nhật trạng thái tích hợp rào chắn Backend
     public function capNhatTrangThai($id, $status) {
         $id = intval($id); 
         $status = intval($status);
+
+        // Lấy thông tin trạng thái hiện tại của đơn hàng
+        $don_hang = $this->layTheoId($id);
+        if (!$don_hang) return false;
+        
+        $trang_thai_hien_tai = intval($don_hang['status']);
+
+        // NGUYÊN TẮC 3 (ĐÓNG BĂNG): Nếu đơn đã giao (2) hoặc hủy (3) thì từ chối mọi lệnh Update
+        if ($trang_thai_hien_tai == 2 || $trang_thai_hien_tai == 3) {
+            return false;
+        }
+
+        // NGUYÊN TẮC 1 (TIẾN BƯỚC): Trạng thái mới phải lớn hơn trạng thái cũ (Ví dụ: Không được lùi từ 1 về 0)
+        // (Ngoại trừ trường hợp hủy đơn bằng 3)
+        if ($status < $trang_thai_hien_tai && $status != 3) {
+            return false;
+        }
+
+        // Nếu vượt qua được các vòng kiểm tra trên thì mới cho phép Update
         return $this->conn->query("UPDATE orders SET status = $status WHERE id = $id");
+    }
+
+    // [THÊM MỚI] NGUYÊN TẮC 2 (HOÀN KHO): Hàm cộng lại số lượng giày vào kho khi Hủy đơn
+    public function hoanLaiKho($id_don_hang) {
+        $id_don_hang = intval($id_don_hang);
+        
+        // Bước 1: Lấy danh sách sản phẩm và số lượng từ bảng chi tiết đơn hàng
+        $sql_get = "SELECT product_id, quantity FROM order_details WHERE order_id = $id_don_hang";
+        $result = $this->conn->query($sql_get);
+
+        if ($result && $result->num_rows > 0) {
+            // Bước 2: Duyệt qua từng sản phẩm để cộng trả lại kho
+            while ($item = $result->fetch_assoc()) {
+                $pid = intval($item['product_id']);
+                $qty = intval($item['quantity']);
+                
+                // Cập nhật lại cột quantity trong bảng products
+                $sql_update = "UPDATE products SET quantity = quantity + $qty WHERE id = $pid";
+                $this->conn->query($sql_update);
+            }
+        }
     }
 
     public function tinhTongDoanhThu() {

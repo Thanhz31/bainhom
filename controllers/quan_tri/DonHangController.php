@@ -29,10 +29,18 @@ class DonHangController {
     public function chi_tiet() {
         $order_id = intval($_GET['id']);
         
-        if (isset($_POST['update_status'])) {
+       if (isset($_POST['update_status'])) {
             $status = $_POST['status'];
-            // Cập nhật qua Model
+            
+            // 1. Cập nhật trạng thái qua Model (Code cũ của bạn giữ nguyên)
             $this->model->capNhatTrangThai($order_id, $status);
+
+            // 2. LOGIC HOÀN KHO: Nếu trạng thái là 3 (Hủy đơn) thì gọi hàm hoàn kho
+            if ($status == 3) {
+                $this->model->hoanLaiKho($order_id);
+            }
+
+            // 3. Load lại trang
             header("Location: index.php?controller=don_hang&action=chi_tiet&id=$order_id");
             exit();
         }
