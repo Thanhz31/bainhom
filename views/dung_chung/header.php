@@ -1,5 +1,5 @@
 <?php
-// Tự động đếm TỔNG SỐ LƯỢNG tất cả sản phẩm trong giỏ hàng 1
+// Tự động đếm TỔNG SỐ LƯỢNG tất cả sản phẩm trong giỏ hàng
 $cart_count = 0;
 if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
     foreach ($_SESSION['cart'] as $item) {
