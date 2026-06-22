@@ -47,5 +47,5 @@
         </div>
     </div>
 <?php else: ?>
-    <div class="alert alert-warning">Sản phẩm không tồn tại hoặc đã bị xóa.</div>
+    <div class="alert alert-warning">Sản phẩm không tồn tại hoặc đã bị xóa</div>
 <?php endif; ?>
