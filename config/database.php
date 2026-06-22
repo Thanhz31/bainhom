@@ -1,6 +1,6 @@
 <?php
 class Database {
-    // Thông tin cấu hình (Lấy từ file db.php cũ của bạn)
+    // Thông tin cấu hình 
     private $host = "127.0.0.1";
     private $username = "root";
     private $password = "";
