@@ -42,7 +42,12 @@
                                 <td class="text-center fw-bold"><?php echo $row['id']; ?></td>
                                 <td class="fw-bold"><?php echo $row['name']; ?></td>
                                 <td class="text-center">
-                                    <a href="index.php?controller=danh_muc&action=xoa&id=<?php echo $row['id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Bạn chắc chắn muốn xóa danh mục này?');"><i class="fas fa-trash"></i> Xóa</a>
+                                    <a href="index.php?controller=danh_muc&action=xem_san_pham&id=<?php echo $row['id']; ?>" class="btn btn-sm btn-info text-white">
+                                        <i class="fas fa-eye"></i> Xem SP
+                                    </a>
+                                    <a href="index.php?controller=danh_muc&action=xoa&id=<?php echo $row['id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Bạn chắc chắn muốn xóa danh mục này?');">
+                                        <i class="fas fa-trash"></i> Xóa
+                                    </a>
                                 </td>
                             </tr>
                             <?php endforeach; ?>

@@ -33,5 +33,18 @@ class DanhMucModel {
         $res = $this->db->query("SELECT * FROM categories WHERE id = $id");
         return $res ? $res->fetch_assoc() : null;
     }
+    // Thêm vào DanhMucModel.php
+    public function laySanPhamTheoDanhMuc($category_id) {
+    $category_id = intval($category_id);
+    $sql = "SELECT * FROM products WHERE category_id = $category_id";
+    $result = $this->conn->query($sql);
+    $data = [];
+    if ($result) {
+        while($row = $result->fetch_assoc()) {
+            $data[] = $row;
+        }
+    }
+    return $data;
+    }
 }
 ?>

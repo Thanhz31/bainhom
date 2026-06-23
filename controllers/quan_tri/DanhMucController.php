@@ -48,5 +48,18 @@ class DanhMucController {
             header("Location: index.php?controller=danh_muc");
         }
     }
+    // Thêm vào DanhMucController.php
+    public function xem_san_pham() {
+    $category_id = intval($_GET['id']);
+    
+    // Gọi model để lấy danh sách sản phẩm
+    $danhMucModel = new DanhMucModel($this->db);
+    $products = $danhMucModel->laySanPhamTheoDanhMuc($category_id);
+    
+    // Gọi view hiển thị danh sách sản phẩm (bạn cần tạo file này ở Bước 3)
+    require_once '../views/dung_chung/admin_header.php';
+    require_once '../views/quan_tri/danh_muc/danh_sach_san_pham.php';
+    require_once '../views/dung_chung/admin_footer.php';
+    }
 }
 ?>
