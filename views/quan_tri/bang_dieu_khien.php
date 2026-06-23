@@ -22,7 +22,7 @@
                     <h5 class="card-title text-uppercase fw-bold">Tổng Doanh Thu</h5>
                     <p class="card-text small">(Đơn thành công)</p>
                 </div>
-                <h3 class="fw-bold m-0"><?php echo number_format($revenue ? $revenue : 0); ?> ₫</h3>
+                <h3 class="fw-bold m-0"><?php echo number_format(isset($revenue) ? $revenue : 0); ?> ₫</h3>
             </div>
         </div>
     </div>
@@ -58,7 +58,6 @@
         <a href="index.php?controller=don_hang" class="btn btn-warning text-dark fw-bold shadow-sm">
             <i class="fas fa-shopping-cart"></i> Quản lý Đơn hàng
         </a>
-        
         <a href="index.php?controller=danh_muc" class="btn btn-info text-white"><i class="fas fa-tags"></i> Quản lý Danh mục</a>
         <a href="index.php?controller=san_pham" class="btn btn-primary"><i class="fas fa-boxes"></i> Quản lý sản phẩm</a> 
         <a href="index.php?controller=nguoi_dung" class="btn btn-secondary"><i class="fas fa-users"></i> Người Dùng</a>  
@@ -71,8 +70,23 @@
 <div class="row">
     <div class="col-md-8 mb-4">
         <div class="card shadow border-0 h-100">
-            <div class="card-header bg-white border-bottom-0 pt-4 pb-0">
-                <h5 class="fw-bold text-secondary"><i class="fas fa-chart-line text-success"></i> Biểu đồ Doanh thu (7 ngày qua)</h5>
+            <div class="card-header bg-white border-bottom-0 pt-4 pb-0 d-flex justify-content-between align-items-center">
+                <h5 class="fw-bold text-secondary mb-0"><i class="fas fa-chart-bar text-success"></i> Doanh thu năm <?php echo isset($selected_year) ? $selected_year : date('Y'); ?></h5>
+                
+                <form action="index.php" method="GET" class="d-inline-flex align-items-center">
+                    <input type="hidden" name="controller" value="quan_tri"> 
+                    <label for="yearSelect" class="me-2 fw-semibold text-muted small mb-0 text-nowrap">Chọn năm:</label>
+                    <select name="year" id="yearSelect" class="form-select form-select-sm" style="width: 100px; cursor: pointer;" onchange="this.form.submit()">
+                        <?php 
+                        $safe_list_years = isset($list_years) ? $list_years : [date('Y')];
+                        $safe_selected = isset($selected_year) ? $selected_year : date('Y');
+                        foreach($safe_list_years as $y): ?>
+                            <option value="<?php echo $y; ?>" <?php echo ($y == $safe_selected) ? 'selected' : ''; ?>>
+                                <?php echo $y; ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </form>
             </div>
             <div class="card-body">
                 <canvas id="doanhThuChart"></canvas>
@@ -95,48 +109,65 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-    // 1. VẼ BIỂU ĐỒ CỘT (DOANH THU)
+    const doanhThuData = <?php echo isset($doanhThuJson) ? $doanhThuJson : '[]'; ?>;
+    const trangThaiData = <?php echo isset($trangThaiJson) ? $trangThaiJson : '[]'; ?>;
+
+    // 1. VẼ BIỂU ĐỒ DOANH THU (Dạng Miền - Area Chart)
     const ctxDoanhThu = document.getElementById('doanhThuChart').getContext('2d');
     new Chart(ctxDoanhThu, {
-        type: 'bar',
+        type: 'line', // Đổi thành dạng đường
         data: {
-            labels: ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'], // Nhãn trục X
+            labels: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'],
             datasets: [{
                 label: 'Doanh thu (VNĐ)',
-                data: [1500000, 2300000, 800000, 5000000, 3200000, 7800000, 4500000], // Dữ liệu ảo
-                backgroundColor: 'rgba(25, 135, 84, 0.7)', // Màu xanh lá Bootstrap
-                borderColor: 'rgba(25, 135, 84, 1)',
-                borderWidth: 1,
-                borderRadius: 5
+                data: doanhThuData, 
+                backgroundColor: 'rgba(25, 135, 84, 0.2)', // Màu nền nhạt đi một chút để phần miền bên dưới trông đẹp hơn
+                borderColor: 'rgba(25, 135, 84, 1)', // Viền đường kẻ màu xanh đậm
+                borderWidth: 2,
+                fill: true, // [QUAN TRỌNG] Bật thuộc tính này để đổ màu xuống trục X tạo thành Biểu đồ Miền
+                tension: 0.4, // Tạo độ cong mượt mà cho các đỉnh
+                pointBackgroundColor: '#ffffff', // Màu trong của các chấm dữ liệu
+                pointBorderColor: 'rgba(25, 135, 84, 1)',
+                pointRadius: 4,
+                pointHoverRadius: 6
             }]
         },
         options: {
             responsive: true,
-            scales: { y: { beginAtZero: true } }
+            scales: { 
+                y: { beginAtZero: true } 
+            },
+            plugins: {
+                legend: { display: true }
+            }
         }
     });
 
-    // 2. VẼ BIỂU ĐỒ TRÒN (TRẠNG THÁI ĐƠN HÀNG)
+    // 2. VẼ BIỂU ĐỒ TRẠNG THÁI ĐƠN HÀNG (Dạng Pie)
     const ctxTrangThai = document.getElementById('trangThaiChart').getContext('2d');
     new Chart(ctxTrangThai, {
-        type: 'doughnut', // Biểu đồ bánh donut
+        type: 'pie', 
         data: {
             labels: ['Chờ duyệt', 'Đang giao', 'Thành công', 'Đã hủy'],
             datasets: [{
-                data: [4, 2, 10, 1], // Dữ liệu ảo
+                data: trangThaiData, 
                 backgroundColor: [
-                    '#ffc107', // Vàng (Chờ duyệt)
-                    '#0d6efd', // Xanh dương (Đang giao)
-                    '#198754', // Xanh lá (Thành công)
-                    '#dc3545'  // Đỏ (Đã hủy)
+                    '#ffc107', 
+                    '#0d6efd', 
+                    '#198754', 
+                    '#dc3545'  
                 ],
-                borderWidth: 0
+                borderWidth: 2, 
+                borderColor: '#ffffff'
             }]
         },
         options: {
             responsive: true,
             plugins: {
-                legend: { position: 'bottom' }
+                legend: { 
+                    position: 'bottom',
+                    labels: { padding: 20 }
+                }
             }
         }
     });
