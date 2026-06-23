@@ -55,6 +55,10 @@
 
 <div class="card shadow-sm border-0 mb-4 bg-light">
     <div class="card-body d-flex justify-content-center gap-3">
+        <a href="index.php?controller=don_hang" class="btn btn-warning text-dark fw-bold shadow-sm">
+            <i class="fas fa-shopping-cart"></i> Quản lý Đơn hàng
+        </a>
+        
         <a href="index.php?controller=danh_muc" class="btn btn-info text-white"><i class="fas fa-tags"></i> Quản lý Danh mục</a>
         <a href="index.php?controller=san_pham" class="btn btn-primary"><i class="fas fa-boxes"></i> Quản lý sản phẩm</a> 
         <a href="index.php?controller=nguoi_dung" class="btn btn-secondary"><i class="fas fa-users"></i> Người Dùng</a>  
@@ -64,75 +68,76 @@
     </div>
 </div>
 
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <div>
-        <h4 class="m-0 text-uppercase fw-bold text-secondary"><i class="fas fa-list-alt text-primary"></i> Danh sách Đơn hàng</h4>
-        <?php if(isset($_GET['keyword']) && trim($_GET['keyword']) != ''): ?>
-            <small class="text-danger fw-bold">Hiển thị kết quả cho: '<?php echo htmlspecialchars($_GET['keyword']); ?>'</small>
-        <?php endif; ?>
-    </div>
-    
-    <form action="index.php" method="GET" class="m-0" style="min-width: 350px;">
-        <input type="hidden" name="controller" value="don_hang">
-        <input type="hidden" name="action" value="tim_kiem">
-        
-        <div class="input-group shadow-sm">
-            <input type="text" name="keyword" class="form-control border-primary" placeholder="Tên, SĐT hoặc Mã đơn..." value="<?php echo isset($_GET['keyword']) ? htmlspecialchars($_GET['keyword']) : ''; ?>" required>
-            
-            <button type="submit" class="btn btn-primary px-3" title="Tìm kiếm">
-                <i class="fas fa-search"></i>
-            </button>
-            
-            <?php if(isset($_GET['keyword']) && trim($_GET['keyword']) != ''): ?>
-                <a href="index.php?controller=quan_tri" class="btn btn-outline-danger px-3" title="Hủy tìm kiếm">
-                    <i class="fas fa-times"></i>
-                </a>
-            <?php endif; ?>
+<div class="row">
+    <div class="col-md-8 mb-4">
+        <div class="card shadow border-0 h-100">
+            <div class="card-header bg-white border-bottom-0 pt-4 pb-0">
+                <h5 class="fw-bold text-secondary"><i class="fas fa-chart-line text-success"></i> Biểu đồ Doanh thu (7 ngày qua)</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="doanhThuChart"></canvas>
+            </div>
         </div>
-    </form>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="card shadow border-0 h-100">
+            <div class="card-header bg-white border-bottom-0 pt-4 pb-0">
+                <h5 class="fw-bold text-secondary"><i class="fas fa-chart-pie text-warning"></i> Tỷ lệ Đơn hàng</h5>
+            </div>
+            <div class="card-body d-flex justify-content-center align-items-center">
+                <canvas id="trangThaiChart" style="max-height: 250px;"></canvas>
+            </div>
+        </div>
+    </div>
 </div>
 
-<div class="card shadow border-0">
-    <div class="card-body p-0">
-        <table class="table table-bordered table-hover mb-0 align-middle">
-            <thead class="table-dark text-center">
-                <tr>
-                    <th>Mã đơn</th>
-                    <th>Thông tin Khách hàng</th>
-                    <th>Ngày đặt</th>
-                    <th>Tổng tiền</th>
-                    <th>Trạng thái</th>
-                    <th>Hành động</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if (!empty($orders)): foreach($orders as $row): 
-                    $stt = $row['status'];
-                    $badge = "";
-                    if ($stt == 0) $badge = '<span class="badge bg-secondary">Chờ duyệt</span>';
-                    elseif ($stt == 1) $badge = '<span class="badge bg-primary">Đang giao</span>';
-                    elseif ($stt == 2) $badge = '<span class="badge bg-success">Đã giao (Thành công)</span>';
-                    elseif ($stt == 3) $badge = '<span class="badge bg-danger">Đã hủy</span>';
-                ?>
-                <tr>
-                    <td class="text-center fw-bold">#<?php echo $row['id']; ?></td>
-                    <td>
-                        <strong><?php echo $row['customer_name']; ?></strong><br>
-                        <small class="text-muted"><i class="fas fa-phone-alt"></i> <?php echo $row['customer_phone']; ?></small>
-                    </td>
-                    <td class="text-center"><?php echo date("d/m/Y H:i", strtotime($row['created_at'])); ?></td>
-                    <td class="text-end text-danger fw-bold"><?php echo number_format($row['total_money']); ?> ₫</td>
-                    <td class="text-center"><?php echo $badge; ?></td>
-                    <td class="text-center">
-                        <a href="index.php?controller=don_hang&action=chi_tiet&id=<?php echo $row['id']; ?>" class="btn btn-sm btn-info text-white">
-                            <i class="fas fa-eye"></i> Xem & Xử lý
-                        </a>
-                    </td>
-                </tr>
-                <?php endforeach; else: ?>
-                    <tr><td colspan="6" class="text-center py-4 text-muted">Không tìm thấy đơn hàng nào khớp với từ khóa!</td></tr>
-                <?php endif; ?>
-            </tbody>
-        </table>
-    </div>
-</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    // 1. VẼ BIỂU ĐỒ CỘT (DOANH THU)
+    const ctxDoanhThu = document.getElementById('doanhThuChart').getContext('2d');
+    new Chart(ctxDoanhThu, {
+        type: 'bar',
+        data: {
+            labels: ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'], // Nhãn trục X
+            datasets: [{
+                label: 'Doanh thu (VNĐ)',
+                data: [1500000, 2300000, 800000, 5000000, 3200000, 7800000, 4500000], // Dữ liệu ảo
+                backgroundColor: 'rgba(25, 135, 84, 0.7)', // Màu xanh lá Bootstrap
+                borderColor: 'rgba(25, 135, 84, 1)',
+                borderWidth: 1,
+                borderRadius: 5
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: { y: { beginAtZero: true } }
+        }
+    });
+
+    // 2. VẼ BIỂU ĐỒ TRÒN (TRẠNG THÁI ĐƠN HÀNG)
+    const ctxTrangThai = document.getElementById('trangThaiChart').getContext('2d');
+    new Chart(ctxTrangThai, {
+        type: 'doughnut', // Biểu đồ bánh donut
+        data: {
+            labels: ['Chờ duyệt', 'Đang giao', 'Thành công', 'Đã hủy'],
+            datasets: [{
+                data: [4, 2, 10, 1], // Dữ liệu ảo
+                backgroundColor: [
+                    '#ffc107', // Vàng (Chờ duyệt)
+                    '#0d6efd', // Xanh dương (Đang giao)
+                    '#198754', // Xanh lá (Thành công)
+                    '#dc3545'  // Đỏ (Đã hủy)
+                ],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'bottom' }
+            }
+        }
+    });
+</script>
