@@ -1,9 +1,14 @@
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <div>
-        <h4 class="m-0 text-uppercase fw-bold text-secondary"><i class="fas fa-list-alt text-primary"></i> Danh sách Đơn hàng</h4>
-        <?php if(isset($_GET['keyword']) && trim($_GET['keyword']) != ''): ?>
-            <small class="text-danger fw-bold">Hiển thị kết quả cho: '<?php echo htmlspecialchars($_GET['keyword']); ?>'</small>
-        <?php endif; ?>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex align-items-center gap-3">
+        <a href="index.php?controller=quan_tri" class="btn btn-outline-secondary btn-sm shadow-sm" title="Trở về Bảng điều khiển">
+            <i class="fas fa-arrow-left me-1"></i> Quay lại
+        </a>
+        <div>
+            <h4 class="m-0 text-uppercase fw-bold text-secondary"><i class="fas fa-list-alt text-primary"></i> Danh sách Đơn hàng</h4>
+            <?php if(isset($_GET['keyword']) && trim($_GET['keyword']) != ''): ?>
+                <small class="text-danger fw-bold">Hiển thị kết quả cho: '<?php echo htmlspecialchars($_GET['keyword']); ?>'</small>
+            <?php endif; ?>
+        </div>
     </div>
     
     <form action="index.php" method="GET" class="m-0" style="min-width: 350px;">
@@ -18,7 +23,7 @@
             </button>
             
             <?php if(isset($_GET['keyword']) && trim($_GET['keyword']) != ''): ?>
-                <a href="index.php?controller=quan_tri" class="btn btn-outline-danger px-3" title="Hủy tìm kiếm">
+                <a href="index.php?controller=don_hang" class="btn btn-outline-danger px-3" title="Hủy tìm kiếm">
                     <i class="fas fa-times"></i>
                 </a>
             <?php endif; ?>
