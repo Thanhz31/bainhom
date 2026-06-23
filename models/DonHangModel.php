@@ -6,9 +6,6 @@ class DonHangModel {
         $this->conn = $db;
     }
 
-    // ==========================================
-    // CÁC HÀM CŨ (Dùng cho khách đặt hàng)
-    // ==========================================
     public function taoDonHang($user_id, $name, $phone, $address, $total) {
         $uid = $user_id ? intval($user_id) : "NULL";
         $name = $this->conn->real_escape_string($name);
@@ -19,7 +16,7 @@ class DonHangModel {
                 VALUES ($uid, '$name', '$phone', '$address', '$total')";
         
         if ($this->conn->query($sql)) {
-            return $this->conn->insert_id; // Trả về mã đơn hàng vừa tạo
+            return $this->conn->insert_id; 
         }
         return false;
     }
@@ -35,7 +32,9 @@ class DonHangModel {
         $sql = "SELECT * FROM orders WHERE user_id = $user_id ORDER BY created_at DESC";
         $result = $this->conn->query($sql);
         $data = [];
-        while($row = $result->fetch_assoc()) { $data[] = $row; }
+        if ($result) {
+            while($row = $result->fetch_assoc()) { $data[] = $row; }
+        }
         return $data;
     }
 
@@ -54,9 +53,6 @@ class DonHangModel {
         return $data;
     }
 
-    // ==========================================
-    // CÁC HÀM QUẢN TRỊ (Đã áp dụng 3 Nguyên Tắc)
-    // ==========================================
     public function layTatCa() {
         $result = $this->conn->query("SELECT * FROM orders ORDER BY created_at DESC");
         $data = [];
@@ -82,47 +78,35 @@ class DonHangModel {
         return $data;
     }
 
-    // [ĐÃ SỬA] Hàm cập nhật trạng thái tích hợp rào chắn Backend
     public function capNhatTrangThai($id, $status) {
         $id = intval($id); 
         $status = intval($status);
 
-        // Lấy thông tin trạng thái hiện tại của đơn hàng
         $don_hang = $this->layTheoId($id);
         if (!$don_hang) return false;
         
         $trang_thai_hien_tai = intval($don_hang['status']);
 
-        // NGUYÊN TẮC 3 (ĐÓNG BĂNG): Nếu đơn đã giao (2) hoặc hủy (3) thì từ chối mọi lệnh Update
         if ($trang_thai_hien_tai == 2 || $trang_thai_hien_tai == 3) {
             return false;
         }
 
-        // NGUYÊN TẮC 1 (TIẾN BƯỚC): Trạng thái mới phải lớn hơn trạng thái cũ (Ví dụ: Không được lùi từ 1 về 0)
-        // (Ngoại trừ trường hợp hủy đơn bằng 3)
         if ($status < $trang_thai_hien_tai && $status != 3) {
             return false;
         }
 
-        // Nếu vượt qua được các vòng kiểm tra trên thì mới cho phép Update
         return $this->conn->query("UPDATE orders SET status = $status WHERE id = $id");
     }
 
-    // [THÊM MỚI] NGUYÊN TẮC 2 (HOÀN KHO): Hàm cộng lại số lượng giày vào kho khi Hủy đơn
     public function hoanLaiKho($id_don_hang) {
         $id_don_hang = intval($id_don_hang);
-        
-        // Bước 1: Lấy danh sách sản phẩm và số lượng từ bảng chi tiết đơn hàng
         $sql_get = "SELECT product_id, quantity FROM order_details WHERE order_id = $id_don_hang";
         $result = $this->conn->query($sql_get);
 
         if ($result && $result->num_rows > 0) {
-            // Bước 2: Duyệt qua từng sản phẩm để cộng trả lại kho
             while ($item = $result->fetch_assoc()) {
                 $pid = intval($item['product_id']);
                 $qty = intval($item['quantity']);
-                
-                // Cập nhật lại cột quantity trong bảng products
                 $sql_update = "UPDATE products SET quantity = quantity + $qty WHERE id = $pid";
                 $this->conn->query($sql_update);
             }
@@ -137,6 +121,61 @@ class DonHangModel {
     public function demDonChoDuyet() {
         $res = $this->conn->query("SELECT COUNT(id) as count FROM orders WHERE status = 0");
         return ($res && $res->num_rows > 0) ? $res->fetch_assoc()['count'] : 0;
+    }
+
+    // ==========================================
+    // CÁC HÀM XỬ LÝ DỮ LIỆU BIỂU ĐỒ
+    // ==========================================
+    
+    // Lấy danh sách các năm có giao dịch để làm bộ lọc
+    public function layCacNamCoDoanhThu() {
+        $sql = "SELECT DISTINCT YEAR(created_at) as nam FROM orders WHERE status = 2 ORDER BY nam DESC";
+        $result = $this->conn->query($sql);
+        $years = [];
+        if ($result) {
+            while($row = $result->fetch_assoc()) {
+                $years[] = $row['nam'];
+            }
+        }
+        // Nếu database chưa có đơn nào, mặc định trả về năm hiện tại
+        if (empty($years)) {
+            $years[] = date('Y');
+        }
+        return $years;
+    }
+
+    // Lấy tổng doanh thu của từng tháng theo năm
+    public function thongKeDoanhThuTheoThang($year = null) {
+        if ($year == null) {
+            $year = date('Y');
+        }
+        $year = intval($year); 
+
+        $sql = "SELECT MONTH(created_at) as thang, SUM(total_money) as doanh_thu 
+                FROM orders 
+                WHERE status = 2 AND YEAR(created_at) = $year 
+                GROUP BY MONTH(created_at)";
+        $result = $this->conn->query($sql);
+        $data = [];
+        if ($result) {
+            while($row = $result->fetch_assoc()) { 
+                $data[$row['thang']] = $row['doanh_thu']; 
+            }
+        }
+        return $data;
+    }
+
+    // Đếm số lượng đơn hàng theo từng trạng thái
+    public function thongKeTrangThaiDonHang() {
+        $sql = "SELECT status, COUNT(id) as so_luong FROM orders GROUP BY status";
+        $result = $this->conn->query($sql);
+        $data = [0 => 0, 1 => 0, 2 => 0, 3 => 0]; 
+        if ($result) {
+            while($row = $result->fetch_assoc()) { 
+                $data[$row['status']] = $row['so_luong']; 
+            }
+        }
+        return $data;
     }
 }
 ?>

@@ -59,7 +59,7 @@
                             <?php echo ($order_info['status'] == 2) ? 'ĐƠN HÀNG ĐÃ HOÀN TẤT' : 'ĐƠN HÀNG ĐÃ BỊ HỦY'; ?>
                             <br><small class="fw-normal">Không thể thay đổi trạng thái</small>
                         </div>
-                        <a href="index.php?controller=quan_tri" class="btn btn-outline-secondary w-100">Quay lại danh sách</a>
+                        <a href="index.php?controller=don_hang" class="btn btn-outline-secondary w-100">Quay lại danh sách</a>
                     
                     <?php 
                     // Nếu đơn hàng đang ở mức Chờ duyệt (0) hoặc Đang giao (1) thì mở Form
