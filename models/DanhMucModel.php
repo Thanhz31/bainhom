@@ -1,6 +1,6 @@
 <?php
 class DanhMucModel {
-    private $db;
+    private $db; // Đảm bảo thuộc tính này là $db
 
     public function __construct($db) {
         $this->db = $db;
@@ -27,24 +27,24 @@ class DanhMucModel {
         return $this->db->query("DELETE FROM categories WHERE id = $id");
     }
 
-    // Bổ sung hàm lấy tên Danh mục cho Trang chủ
     public function layTheoId($id) {
         $id = intval($id);
         $res = $this->db->query("SELECT * FROM categories WHERE id = $id");
         return $res ? $res->fetch_assoc() : null;
     }
-    // Thêm vào DanhMucModel.php
+
+    // ĐÃ SỬA: Dùng $this->db->query thay vì $this->conn->query
     public function laySanPhamTheoDanhMuc($category_id) {
-    $category_id = intval($category_id);
-    $sql = "SELECT * FROM products WHERE category_id = $category_id";
-    $result = $this->conn->query($sql);
-    $data = [];
-    if ($result) {
-        while($row = $result->fetch_assoc()) {
-            $data[] = $row;
+        $category_id = intval($category_id);
+        $sql = "SELECT * FROM products WHERE category_id = $category_id";
+        $result = $this->db->query($sql); // Dùng $this->db đã được khai báo ở trên
+        $data = [];
+        if ($result) {
+            while($row = $result->fetch_assoc()) {
+                $data[] = $row;
+            }
         }
-    }
-    return $data;
+        return $data;
     }
 }
 ?>
