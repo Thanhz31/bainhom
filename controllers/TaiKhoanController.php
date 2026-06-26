@@ -11,6 +11,7 @@ class TaiKhoanController {
         $this->db = (new Database())->getConnection();
         $this->taiKhoanService = new TaiKhoanComponent($this->db);
     }
+    
 
     // Giữ nguyên hàm đăng nhập của bạn
     public function dang_nhap() {
@@ -74,5 +75,25 @@ class TaiKhoanController {
         require_once '../views/tai_khoan/dang_ky.php';
         require_once '../views/dung_chung/footer.php';
     }
+     // <<< CHỨC NĂNG QUÊN MẬT KHẨU MỚI THÊM VÀO >>>
+
+    // Hàm xử lý hiển thị form và xác minh Quên mật khẩu
+    public function quen_mat_khau() {
+        $error = null;
+        $success = null;
+
+        // Nếu người dùng nhấn nút "forg_password" từ form
+        if (isset($_POST['forg_password'])) {
+            $username = $_POST['forgo_password']; // Sửa lại tên field cho khớp
+            // Logic xử lý kiểm tra (ví dụ minh họa):
+            // $user = $this->taiKhoanModel->checkForgot($_POST['forgo_password']);
+            // If success, logic to reset password...
+            // $success = "Xác minh thành công. Mật khẩu mặc định mới là: 123456";
+        }
+
+        require_once '../views/tai_khoan/quen_mat_khau.php';
+    }
+    
+    
 }
 ?>
