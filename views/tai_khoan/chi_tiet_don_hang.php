@@ -47,6 +47,7 @@
 
         <!-- Cột phải: Thông tin giao hàng và Trạng thái -->
         <div class="col-md-4">
+            <!-- Thông tin người nhận -->
             <div class="card shadow-sm border-0 mb-3">
                 <div class="card-header bg-info text-white fw-bold">Thông tin giao hàng</div>
                 <div class="card-body">
@@ -57,7 +58,8 @@
                 </div>
             </div>
 
-            <div class="card shadow-sm border-0">
+            <!-- Khối trạng thái đơn hàng (CHỈ HIỂN THỊ TRẠNG THÁI) -->
+            <div class="card shadow-sm border-0 mb-3">
                 <div class="card-header bg-warning text-dark fw-bold">Trạng thái đơn hàng</div>
                 <div class="card-body text-center">
                     <?php 
@@ -74,6 +76,19 @@
                     ?>
                 </div>
             </div>
+
+            <!-- Khối nút hủy đơn riêng biệt (Chỉ hiển thị khi status == 0) -->
+            <?php if ($order_info['status'] == 0): ?>
+            <div class="card shadow-sm border-0">
+                <div class="card-body text-center p-3">
+                    <a href="index.php?controller=don_hang&action=huy_don&id=<?php echo $order_info['id']; ?>" 
+                       class="btn btn-danger w-100 fw-bold" 
+                       onclick="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này không?')">
+                       <i class="fas fa-times"></i> HỦY ĐƠN HÀNG
+                    </a>
+                </div>
+            </div>
+            <?php endif; ?>
         </div>
     </div>
 </div>

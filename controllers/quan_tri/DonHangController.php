@@ -9,20 +9,24 @@ class DonHangController {
     public function __construct() {
         $this->db = (new Database())->getConnection();
         
-        // Lấy action hiện tại (nếu không truyền mặc định là index)
+        // Lấy action hiện tại
         $action = isset($_GET['action']) ? $_GET['action'] : 'index';
 
         // =====================================
         // PHÂN LUỒNG KIỂM TRA QUYỀN TRUY CẬP
         // =====================================
-        if ($action == 'chi_tiet_don_hang') {
-            // Dành cho khách hàng xem hóa đơn: Chỉ cần đăng nhập tài khoản thường
+        
+        // Danh sách các action mà khách hàng (user thường) được phép truy cập
+        $allowed_for_customers = ['chi_tiet_don_hang', 'huy_don'];
+
+        if (in_array($action, $allowed_for_customers)) {
+            // Kiểm tra khách hàng đã đăng nhập chưa
             if (!isset($_SESSION['user'])) {
                 header("Location: index.php?controller=tai_khoan&action=dang_nhap");
                 exit();
             }
         } else {
-            // Dành cho Admin (index, chi_tiet, tim_kiem): Bắt buộc phải là Admin
+            // Các action khác (index, chi_tiet, tim_kiem) bắt buộc phải là Admin
             if (!isset($_SESSION['admin_user'])) {
                 header("Location: index.php?controller=tai_khoan&action=dang_nhap");
                 exit();
@@ -110,5 +114,33 @@ class DonHangController {
         require_once '../views/tai_khoan/chi_tiet_don_hang.php'; 
         require_once '../views/dung_chung/footer.php';
     }
+    public function huy_don() {
+    $order_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+    
+    // 1. Lấy thông tin đơn hàng để kiểm tra
+    $order = $this->model->layTheoId($order_id);
+
+    // 2. BẢO MẬT: Chỉ hủy được nếu:
+    // - Đơn hàng tồn tại
+    // - Đơn hàng của chính người đang đăng nhập (user_id khớp)
+    // - Đơn hàng đang ở trạng thái chờ duyệt (status == 0)
+    if ($order && $order['user_id'] == $_SESSION['user']['id'] && $order['status'] == 0) {
+        
+        // 3. Thực hiện hủy: Chuyển status về 3 (Đã hủy)
+        $this->model->capNhatTrangThai($order_id, 3);
+        
+        // 4. Hoàn lại kho
+        $this->model->hoanLaiKho($order_id);
+        
+        // 5. Nếu đã thanh toán online (payment_status == 1) -> Đánh dấu hoàn tiền
+        if ($order['payment_status'] == 1) {
+            $this->model->capNhatThanhToan($order_id, 2); // 2: Đã hoàn tiền
+        }
+
+        echo "<script>alert('Đơn hàng đã được hủy thành công!'); window.location.href='index.php?controller=don_hang&action=chi_tiet_don_hang&id=$order_id';</script>";
+    } else {
+        echo "<script>alert('Không thể hủy đơn hàng này!'); window.location.href='index.php?controller=tai_khoan&action=don_hang';</script>";
+    }
+}
 }
 ?>
