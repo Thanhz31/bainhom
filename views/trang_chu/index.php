@@ -1,4 +1,5 @@
 <div class="row">
+    <!-- CỘT BÊN TRÁI: DANH MỤC SẢN PHẨM -->
     <div class="col-md-3 mb-4">
         <div class="list-group shadow-sm sticky-top" style="top: 80px; z-index: 1;">
             <a href="#" class="list-group-item list-group-item-action active fw-bold text-uppercase">
@@ -17,23 +18,48 @@
         </div>
     </div>
 
+    <!-- CỘT BÊN PHẢI: NỘI DUNG CHÍNH -->
     <div class="col-md-9">
-        <div id="bannerKhuyenMai" class="carousel slide mb-4 shadow-sm" data-bs-ride="carousel">
-  <div class="carousel-inner rounded">
-    <div class="carousel-item active">
-      <img src="uploads/banner1.jpg" class="d-block w-100" alt="Lễ hội bóng đá giảm 50%">
-    </div>  
-    <div class="carousel-item">
-      <img src="uploads/banner2.jpg" class="d-block w-100" alt="Siêu sale giữa tháng">
-    </div>
-  </div>
-  <button class="carousel-control-prev" type="button" data-bs-target="#bannerKhuyenMai" data-bs-slide="prev">
-    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-  </button>
-  <button class="carousel-control-next" type="button" data-bs-target="#bannerKhuyenMai" data-bs-slide="next">
-    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-  </button>
-</div>
+        
+        <!-- KHUNG BANNER KIỂU SHOPEE ĐÃ ĐƯỢC CẬP NHẬT -->
+        <div class="row g-2 mb-4">
+            <!-- Banner Carousel Chính (Chiếm 2/3 không gian) -->
+            <div class="col-md-8">
+                <div id="bannerKhuyenMai" class="carousel slide h-100 shadow-sm" data-bs-ride="carousel">
+                    <div class="carousel-inner rounded h-100">
+                        <div class="carousel-item active h-100">
+                            <img src="uploads/banner1.jpg" class="d-block w-100 h-100" style="object-fit: cover; min-height: 250px;" alt="Lễ hội bóng đá giảm 50%">
+                        </div>  
+                        <div class="carousel-item h-100">
+                            <img src="uploads/banner2.jpg" class="d-block w-100 h-100" style="object-fit: cover; min-height: 250px;" alt="Siêu sale giữa tháng">
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#bannerKhuyenMai" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#bannerKhuyenMai" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 2 Banner Nhỏ Bên Phải (Chiếm 1/3 không gian) -->
+            <div class="col-md-4 d-flex flex-column gap-2">
+                <div class="rounded overflow-hidden shadow-sm flex-fill">
+                    <a href="#">
+                        <img src="uploads/anhphu1.png" class="w-100 h-100" style="object-fit: cover; min-height: 120px;" alt="Banner Phụ 1">
+                    </a>
+                </div>
+                <div class="rounded overflow-hidden shadow-sm flex-fill">
+                    <a href="#">
+                        <img src="uploads/anhphu2.png" class="w-100 h-100" style="object-fit: cover; min-height: 120px;" alt="Banner Phụ 2">
+                    </a>
+                </div>
+            </div>
+        </div> 
+        <!-- HẾT KHUNG BANNER -->
+
+        <!-- KHU VỰC SẢN PHẨM GIÁ RẺ -->
         <?php if(!isset($_GET['q']) && !isset($_GET['cat_id']) && $res_top): ?>
         <div class="mb-5">
             <h4 class="text-uppercase border-bottom pb-2 border-danger text-danger">
@@ -47,7 +73,7 @@
                             <img src="uploads/<?php echo $row['image']; ?>" class="card-img-top p-2" style="height: 150px; object-fit: contain;">
                         </a>
                         <div class="card-body p-2 text-center">
-<h6 class="card-title text-truncate"><a href="index.php?controller=trang_chu&action=chi_tiet&id=<?php echo $row['id']; ?>" class="text-decoration-none text-dark"><?php echo $row['name']; ?></a></h6>
+                            <h6 class="card-title text-truncate"><a href="index.php?controller=trang_chu&action=chi_tiet&id=<?php echo $row['id']; ?>" class="text-decoration-none text-dark"><?php echo $row['name']; ?></a></h6>
                             <p class="text-danger fw-bold mb-0"><?php echo number_format($row['price']); ?> ₫</p>
                             <small class="text-muted" style="font-size: 0.8rem;">Đã bán: <?php echo isset($row['sold_count']) ? $row['sold_count'] : 0; ?></small>
                         </div>
@@ -58,6 +84,7 @@
         </div>
         <?php endif; ?>
 
+        <!-- KHU VỰC DANH SÁCH SẢN PHẨM CHÍNH -->
         <h4 class="text-uppercase border-bottom pb-2 border-secondary mb-3">
             <?php echo $section_title; ?>
         </h4>
@@ -89,7 +116,7 @@
                             <form action="index.php?controller=gio_hang&action=them" method="POST" class="mt-auto">
                                 <input type="hidden" name="product_id" value="<?php echo $row['id']; ?>">
                                 <input type="hidden" name="product_name" value="<?php echo $row['name']; ?>">
-<input type="hidden" name="product_price" value="<?php echo $row['price']; ?>">
+                                <input type="hidden" name="product_price" value="<?php echo $row['price']; ?>">
                                 <input type="hidden" name="product_image" value="<?php echo $row['image']; ?>">
                                 <input type="hidden" name="qty" value="1">
                                 
