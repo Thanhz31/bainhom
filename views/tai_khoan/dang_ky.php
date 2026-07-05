@@ -74,8 +74,8 @@
                                 </div>
                             </div>
 
-                            <button type="submit" class="btn btn-danger btn-lg w-100 mt-2">
-                                <i class="fa-solid fa-user-plus"></i> &nbsp; ĐĂNG KÝ
+                           <button type="submit" name="register" class="btn btn-danger btn-lg w-100 mt-2">
+                             <i class="fa-solid fa-user-plus"></i> &nbsp; ĐĂNG KÝ
                             </button>
 
                             <div class="text-center mt-3">
