@@ -11,6 +11,8 @@
                         <th>Địa chỉ giao hàng</th>
                         <th>Tổng tiền</th>
                         <th class="text-center">Trạng thái</th>
+                        <!-- BỔ SUNG CỘT HÀNH ĐỘNG -->
+                        <th class="text-center">Hoá đơn</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -39,6 +41,13 @@
                                         echo '<span class="badge bg-secondary">Không xác định</span>';
                                 }
                             ?>
+                        </td>
+                        <!-- BỔ SUNG NÚT XEM CHI TIẾT -->
+                        <td class="text-center">
+                            <!-- Lưu ý: Chữ 'tai_khoan' ở controller có thể sếp phải đổi lại theo đúng tên Controller của sếp nhé -->
+                            <a href="index.php?controller=don_hang&action=chi_tiet_don_hang&id=<?php echo $order['id']; ?>" class="btn btn-sm btn-outline-info shadow-sm rounded-pill">
+                                <i class="fas fa-eye"></i> Xem
+                            </a>
                         </td>
                     </tr>
                     <?php endforeach; ?>
