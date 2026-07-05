@@ -3,6 +3,7 @@
 <?php if (!empty($cart)): ?>
     <div class="row">
         <div class="col-md-8">
+            <!-- Form bao bọc toàn bộ bảng giỏ hàng -->
             <form action="index.php?controller=gio_hang&action=cap_nhat" method="POST">
                 <div class="card shadow-sm border-0 mb-3">
                     <table class="table table-hover mb-0 align-middle">
@@ -28,7 +29,8 @@
                                 </td>
                                 <td><?php echo number_format($item['price']); ?> ₫</td>
                                 <td>
-                                    <input type="number" name="qty[<?php echo $id; ?>]" value="<?php echo $item['qty']; ?>" class="form-control text-center" min="1">
+                                    <!-- ĐÃ THÊM: onchange="this.form.submit()" để tự động cập nhật khi đổi số -->
+                                    <input type="number" name="qty[<?php echo $id; ?>]" value="<?php echo $item['qty']; ?>" class="form-control text-center" min="1" onchange="this.form.submit()" style="cursor: pointer;">
                                 </td>
                                 <td class="fw-bold text-danger"><?php echo number_format($subtotal); ?> ₫</td>
                                 <td>
