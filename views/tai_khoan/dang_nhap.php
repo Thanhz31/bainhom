@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="public/css/style.css">
 
     <style>
-        /* Đảm bảo giao diện bao phủ toàn bộ màn hình */
         .login-page-custom {
             min-height: 100vh;
             width: 100%;
@@ -17,7 +16,6 @@
             justify-content: center;
             padding: 40px 20px;
         }
-        /* Định dạng form bo tròn màu trắng đổ bóng theo ảnh mẫu */
         .login-card-custom {
             width: 100%;
             max-width: 520px;
@@ -30,16 +28,15 @@
     </style>
 </head>
 <body>
-
-    <div class="login-page-custom" style="background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('../uploads/anh_dangky.jpg') no-repeat center center/cover;">
+    <div class="login-page-custom" style="background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('uploads/anh_dangky.jpg') no-repeat center center/cover;">
         <div class="container">
             <div class="row justify-content-center align-items-center">
                 <div class="col-lg-6 col-md-8">
                     <div class="login-card-custom">
                         
                         <div class="text-center mb-4">
-                            <i class="fa-solid fa-cart-shopping login-logo"></i>
-                            <h2 class="fw-bold text-uppercase">ĐĂNG NHẬP</h2>
+                            <i class="fa-solid fa-cart-shopping" style="font-size: 3rem; color: #dc3545;"></i>
+                            <h2 class="fw-bold text-uppercase mt-2">ĐĂNG NHẬP</h2>
                             <p class="text-muted">Welcome back! Please login to your account</p>
                         </div>
 
