@@ -71,6 +71,48 @@
                             <label class="form-label text-muted small">Địa chỉ giao hàng</label>
                             <textarea name="address" class="form-control" rows="3" required><?php echo isset($_SESSION['user']) ? $_SESSION['user']['address'] : ''; ?></textarea>
                         </div>
+
+                        <!-- PHẦN CHỌN PHƯƠNG THỨC THANH TOÁN -->
+                        <div class="mb-3">
+                            <label class="form-label text-muted small fw-bold">Phương thức thanh toán</label>
+                            <div class="form-check border rounded p-2 mb-2 bg-light">
+                                <!-- Value 1: COD -->
+                                <input class="form-check-input ms-1" type="radio" name="payment_method" id="payCOD" value="1" checked onchange="toggleQR(false)">
+                                <label class="form-check-label ms-2" for="payCOD" style="cursor:pointer; display:block;">
+                                    <i class="fas fa-truck text-primary"></i> Thanh toán khi nhận hàng (COD)
+                                </label>
+                            </div>
+                            <div class="form-check border rounded p-2 bg-light">
+                                <!-- Value 2: Online -->
+                                <input class="form-check-input ms-1" type="radio" name="payment_method" id="payOnline" value="2" onchange="toggleQR(true)">
+                                <label class="form-check-label ms-2" for="payOnline" style="cursor:pointer; display:block;">
+                                    <i class="fas fa-qrcode text-success"></i> Thanh toán Online (Chuyển khoản)
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- KHU VỰC HIỂN THỊ MÃ QR (Mặc định ẩn) -->
+                        <div id="qrSection" class="mb-3 border border-success rounded p-3 text-center" style="display: none; background-color: #f8fff9;">
+                            <h6 class="text-success fw-bold mb-2">QUÉT MÃ ĐỂ THANH TOÁN</h6>
+                            
+                            <!-- Hiển thị ảnh QR -->
+                            <img src="uploads/qrthanhtoan.png" alt="Mã QR Thanh Toán" class="img-fluid rounded border mb-2" style="max-width: 200px;">
+                            
+                            <p class="small text-muted mb-1">Nội dung chuyển khoản (Tự động copy):</p>
+                            <div class="input-group mb-2">
+                                <!-- Tạo mã chuyển khoản ngẫu nhiên hoặc theo quy tắc -->
+                                <?php 
+                                    $user_phone = isset($_SESSION['user']) ? $_SESSION['user']['phone'] : 'KHACH_LE';
+                                    $transfer_code = "THANHTOAN " . $user_phone . " " . date("His"); 
+                                ?>
+                                <input type="text" id="transferCode" class="form-control text-center fw-bold text-primary" value="<?php echo $transfer_code; ?>" readonly>
+                                <button class="btn btn-outline-success" type="button" onclick="copyCode()" title="Copy mã">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                            <small class="text-danger">Vui lòng nhập đúng <b>Nội dung chuyển khoản</b> để hệ thống xác nhận tự động.</small>
+                        </div>
+
                         <input type="hidden" name="total" value="<?php echo $total; ?>">
                         <button type="submit" name="order" class="btn btn-danger w-100 py-2 fw-bold shadow-sm">
                             TIẾN HÀNH ĐẶT HÀNG
@@ -78,6 +120,28 @@
                     </form>
                 </div>
             </div>
+
+            <!-- SCRIPTS ĐIỀU KHIỂN GIAO DIỆN -->
+            <script>
+                // Hàm ẩn/hiện khu vực QR
+                function toggleQR(show) {
+                    var qrSection = document.getElementById('qrSection');
+                    if(show) {
+                        qrSection.style.display = 'block';
+                    } else {
+                        qrSection.style.display = 'none';
+                    }
+                }
+
+                // Hàm copy mã chuyển khoản
+                function copyCode() {
+                    var copyText = document.getElementById("transferCode");
+                    copyText.select();
+                    copyText.setSelectionRange(0, 99999); /* Dành cho mobile */
+                    navigator.clipboard.writeText(copyText.value);
+                    alert("Đã copy nội dung: " + copyText.value);
+                }
+            </script>
         </div>
     </div>
 <?php else: ?>
