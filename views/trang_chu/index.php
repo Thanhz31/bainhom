@@ -1,29 +1,97 @@
+<!-- NHÚNG TRỰC TIẾP CSS GIAO DIỆN SHOPEE -->
+<style>
+    /* KHUNG DANH MỤC */
+    .shopee-cat-container {
+        background: #fff;
+        border-radius: 2px;
+        box-shadow: 0 1px 1px 0 rgba(0,0,0,.05);
+        margin-bottom: 25px;
+        overflow: hidden;
+    }
+    .shopee-cat-header {
+        padding: 15px 20px;
+        font-size: 1rem;
+        color: rgba(0,0,0,.54);
+        font-weight: 500;
+        text-transform: uppercase;
+        border-bottom: 1px solid rgba(0,0,0,.05);
+    }
+    /* LƯỚI DANH MỤC KÉO NGANG */
+    .shopee-cat-scroll {
+        display: grid;
+        grid-template-rows: repeat(2, 1fr); /* Ép hiển thị đúng 2 hàng */
+        grid-auto-flow: column; /* Các item sẽ tự động chạy sang ngang */
+        overflow-x: auto;
+        overflow-y: hidden;
+        border-top: 1px solid rgba(0,0,0,.05);
+    }
+    /* Thanh cuộn ngang thanh mảnh */
+    .shopee-cat-scroll::-webkit-scrollbar {
+        height: 6px;
+    }
+    .shopee-cat-scroll::-webkit-scrollbar-thumb {
+        background-color: #e5e5e5;
+        border-radius: 10px;
+    }
+    .shopee-cat-scroll:hover::-webkit-scrollbar-thumb {
+        background-color: #bfbfbf;
+    }
+    /* TỪNG ITEM DANH MỤC */
+    .shopee-cat-item {
+        width: 120px; /* Độ rộng mỗi ô */
+        height: 130px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        text-decoration: none;
+        color: rgba(0,0,0,.8);
+        border-right: 1px solid rgba(0,0,0,.05);
+        border-bottom: 1px solid rgba(0,0,0,.05);
+        transition: transform 0.1s, box-shadow 0.1s;
+    }
+    .shopee-cat-item:hover {
+        box-shadow: 0 2px 8px rgba(0,0,0,.1);
+        z-index: 1;
+        transform: translateY(-1px);
+    }
+    /* ẢNH/ICON DANH MỤC */
+    .shopee-cat-img {
+        width: 70px;
+        height: 70px;
+        margin-bottom: 10px;
+        border-radius: 50%;
+        background: #f8f9fa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        border: 1px solid #f0f0f0;
+    }
+    .shopee-cat-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .shopee-cat-text {
+        font-size: 0.85rem;
+        line-height: 1.2;
+        padding: 0 5px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+</style>
 <div class="row">
-    <!-- CỘT BÊN TRÁI: DANH MỤC SẢN PHẨM -->
-    <div class="col-md-3 mb-4">
-        <div class="list-group shadow-sm sticky-top" style="top: 80px; z-index: 1;">
-            <a href="#" class="list-group-item list-group-item-action active fw-bold text-uppercase">
-                <i class="fas fa-bars me-2"></i> Danh mục
-            </a>
-            <a href="index.php" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                Tất cả sản phẩm <i class="fas fa-chevron-right text-muted small"></i>
-            </a>
-            <?php foreach($categories as $cat): 
-                $active = (isset($_GET['cat_id']) && $_GET['cat_id'] == $cat['id']) ? 'bg-light fw-bold text-danger' : '';
-            ?>
-                <a href="index.php?controller=trang_chu&cat_id=<?php echo $cat['id']; ?>" class="list-group-item list-group-item-action <?php echo $active; ?> d-flex justify-content-between align-items-center">
-                    <?php echo $cat['name']; ?> <i class="fas fa-chevron-right text-muted small"></i>
-                </a>
-            <?php endforeach; ?>
-        </div>
-    </div>
-
-    <!-- CỘT BÊN PHẢI: NỘI DUNG CHÍNH -->
-    <div class="col-md-9">
+    <!-- KHÔNG CÒN CỘT TRÁI. TOÀN BỘ NỘI DUNG SẼ CHIẾM FULL MÀN HÌNH (COL-12) -->
+    <div class="col-12">
         
-        <!-- KHUNG BANNER KIỂU SHOPEE ĐÃ ĐƯỢC CẬP NHẬT -->
+        <!-- ====================================
+             1. KHUNG BANNER TỶ LỆ 8:4 GỌN GÀNG
+        ==================================== -->
         <div class="row g-2 mb-4">
-            <!-- Banner Carousel Chính (Chiếm 2/3 không gian) -->
             <div class="col-md-8">
                 <div id="bannerKhuyenMai" class="carousel slide h-100 shadow-sm" data-bs-ride="carousel">
                     <div class="carousel-inner rounded h-100">
@@ -43,7 +111,6 @@
                 </div>
             </div>
 
-            <!-- 2 Banner Nhỏ Bên Phải (Chiếm 1/3 không gian) -->
             <div class="col-md-4 d-flex flex-column gap-2">
                 <div class="rounded overflow-hidden shadow-sm flex-fill">
                     <a href="#">
@@ -57,9 +124,41 @@
                 </div>
             </div>
         </div> 
-        <!-- HẾT KHUNG BANNER -->
 
-        <!-- KHU VỰC SẢN PHẨM GIÁ RẺ -->
+        <!-- ====================================
+             2. LƯỚI DANH MỤC 2 HÀNG KIỂU SHOPEE
+        ==================================== -->
+        <div class="shopee-cat-container">
+            <div class="shopee-cat-header">DANH MỤC</div>
+            <div class="shopee-cat-scroll">
+                
+                <!-- Nút Mặc định: Tất cả sản phẩm -->
+                <a href="index.php" class="shopee-cat-item">
+                    <div class="shopee-cat-img" style="<?php echo (!isset($_GET['cat_id'])) ? 'border-color: #ee4d2d;' : ''; ?>">
+                        <img src="https://cdn-icons-png.flaticon.com/512/2544/2544087.png" alt="All" class="p-2">
+                    </div>
+                    <div class="shopee-cat-text">Tất cả<br>sản phẩm</div>
+                </a>
+
+                <!-- Loop các danh mục từ Database -->
+                <?php foreach($categories as $cat): 
+                    $border_color = (isset($_GET['cat_id']) && $_GET['cat_id'] == $cat['id']) ? 'border-color: #ee4d2d;' : '';
+                ?>
+                    <a href="index.php?controller=trang_chu&cat_id=<?php echo $cat['id']; ?>" class="shopee-cat-item">
+                        <div class="shopee-cat-img" style="<?php echo $border_color; ?>">
+                            <!-- Avatar tự tạo từ tên danh mục -->
+                            <img src="https://ui-avatars.com/api/?name=<?php echo urlencode($cat['name']); ?>&background=random&color=fff&size=70&bold=true" alt="<?php echo $cat['name']; ?>">
+                        </div>
+                        <div class="shopee-cat-text"><?php echo $cat['name']; ?></div>
+                    </a>
+                <?php endforeach; ?>
+                
+            </div>
+        </div>
+
+        <!-- ====================================
+             3. SẢN PHẨM GIÁ RẺ (FLASH SALE)
+        ==================================== -->
         <?php if(!isset($_GET['q']) && !isset($_GET['cat_id']) && $res_top): ?>
         <div class="mb-5">
             <h4 class="text-uppercase border-bottom pb-2 border-danger text-danger">
@@ -84,8 +183,10 @@
         </div>
         <?php endif; ?>
 
-        <!-- KHU VỰC DANH SÁCH SẢN PHẨM CHÍNH -->
-        <h4 class="text-uppercase border-bottom pb-2 border-secondary mb-3">
+        <!-- ====================================
+             4. DANH SÁCH SẢN PHẨM CHÍNH (GỢI Ý)
+        ==================================== -->
+        <h4 class="text-uppercase border-bottom pb-2 border-secondary mb-3 mt-4">
             <?php echo $section_title; ?>
         </h4>
 
@@ -96,7 +197,8 @@
                     $opacity = $is_out_of_stock ? "opacity: 0.6; filter: grayscale(100%);" : "";
                     $badge = $is_out_of_stock ? "<span class='badge bg-secondary position-absolute top-0 start-0 m-2 shadow-sm'>HẾT HÀNG</span>" : "";
                 ?>
-                <div class="col-md-4 col-sm-6 mb-4">
+                <!-- Sử dụng col-md-3 để hiện 4 sản phẩm / 1 hàng giống Shopee -->
+                <div class="col-md-3 col-sm-6 mb-4">
                     <div class="card h-100 shadow-sm product-card position-relative border-0">
                         <?php echo $badge; ?>
                         
@@ -136,5 +238,6 @@
                 </div>
             <?php endif; ?>
         </div>
+        
     </div>
 </div>
