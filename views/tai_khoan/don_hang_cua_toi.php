@@ -12,7 +12,7 @@
                         <th>Tổng tiền</th>
                         <th class="text-center">Trạng thái</th>
                         <!-- BỔ SUNG CỘT HÀNH ĐỘNG -->
-                        <th class="text-center">Hoá đơn</th>
+                        <th class="text-center">Hàng động</th>
                     </tr>
                 </thead>
                 <tbody>
