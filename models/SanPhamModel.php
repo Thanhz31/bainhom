@@ -105,5 +105,13 @@ class SanPhamModel {
         $res = $this->db->query("SELECT COUNT(id) as count FROM products WHERE $where_clause");
         return ($res && $res->num_rows > 0) ? $res->fetch_assoc()['count'] : 0;
     }
+
+    // ==========================================
+    // HÀM DÙNG CHO DASHBOARD ADMIN (ĐÃ KHÔI PHỤC)
+    // ==========================================
+    public function demTongSanPham() {
+        $res = $this->db->query("SELECT COUNT(id) as count FROM products");
+        return ($res && $res->num_rows > 0) ? $res->fetch_assoc()['count'] : 0;
+    }
 }
 ?>
