@@ -177,5 +177,10 @@ class DonHangModel {
         }
         return $data;
     }
+        public function capNhatTrangThaiThanhToan($order_id, $status) {
+        $order_id = intval($order_id);
+        $status = intval($status); // 1 là đã thanh toán
+        return $this->conn->query("UPDATE orders SET payment_status = $status WHERE id = $order_id");
+    }
 }
 ?>
