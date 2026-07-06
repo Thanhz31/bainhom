@@ -21,9 +21,9 @@
     <!-- CỘT BÊN PHẢI: NỘI DUNG CHÍNH -->
     <div class="col-md-9">
         
-        <!-- KHUNG BANNER KIỂU SHOPEE ĐÃ ĐƯỢC CẬP NHẬT -->
+        <!-- KHUNG BANNER KIỂU SHOPEE -->
         <div class="row g-2 mb-4">
-            <!-- Banner Carousel Chính (Chiếm 2/3 không gian) -->
+            <!-- Banner Carousel Chính -->
             <div class="col-md-8">
                 <div id="bannerKhuyenMai" class="carousel slide h-100 shadow-sm" data-bs-ride="carousel">
                     <div class="carousel-inner rounded h-100">
@@ -43,7 +43,7 @@
                 </div>
             </div>
 
-            <!-- 2 Banner Nhỏ Bên Phải (Chiếm 1/3 không gian) -->
+            <!-- 2 Banner Nhỏ Bên Phải -->
             <div class="col-md-4 d-flex flex-column gap-2">
                 <div class="rounded overflow-hidden shadow-sm flex-fill">
                     <a href="#">
@@ -57,7 +57,6 @@
                 </div>
             </div>
         </div> 
-        <!-- HẾT KHUNG BANNER -->
 
         <!-- KHU VỰC SẢN PHẨM GIÁ RẺ -->
         <?php if(!isset($_GET['q']) && !isset($_GET['cat_id']) && $res_top): ?>
@@ -136,5 +135,38 @@
                 </div>
             <?php endif; ?>
         </div>
+        
+        <!-- KHU VỰC THANH PHÂN TRANG (PAGINATION) NẰM NGAY DƯỚI LƯỚI SẢN PHẨM -->
+        <?php if (isset($total_pages) && $total_pages > 1): ?>
+        <nav aria-label="Page navigation" class="mt-4 mb-5">
+            <ul class="pagination justify-content-center">
+                
+                <!-- Nút 'Trang trước' -->
+                <li class="page-item <?php echo ($page <= 1) ? 'disabled' : ''; ?>">
+                    <a class="page-link" href="?controller=trang_chu&page=<?php echo $page - 1; ?><?php echo isset($_GET['cat_id']) ? '&cat_id='.$_GET['cat_id'] : ''; ?><?php echo isset($_GET['q']) ? '&q='.$_GET['q'] : ''; ?>" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                
+                <!-- Vòng lặp in ra các số trang 1, 2, 3... -->
+                <?php for($i = 1; $i <= $total_pages; $i++): ?>
+                <li class="page-item <?php echo ($page == $i) ? 'active' : ''; ?>">
+                    <a class="page-link" href="?controller=trang_chu&page=<?php echo $i; ?><?php echo isset($_GET['cat_id']) ? '&cat_id='.$_GET['cat_id'] : ''; ?><?php echo isset($_GET['q']) ? '&q='.$_GET['q'] : ''; ?>">
+                        <?php echo $i; ?>
+                    </a>
+                </li>
+                <?php endfor; ?>
+                
+                <!-- Nút 'Trang sau' -->
+                <li class="page-item <?php echo ($page >= $total_pages) ? 'disabled' : ''; ?>">
+                    <a class="page-link" href="?controller=trang_chu&page=<?php echo $page + 1; ?><?php echo isset($_GET['cat_id']) ? '&cat_id='.$_GET['cat_id'] : ''; ?><?php echo isset($_GET['q']) ? '&q='.$_GET['q'] : ''; ?>" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                
+            </ul>
+        </nav>
+        <?php endif; ?>
+
     </div>
 </div>

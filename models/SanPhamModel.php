@@ -38,7 +38,7 @@ class SanPhamModel {
     }
 
     // ==========================================
-    // CÁC HÀM THÊM/SỬA/XÓA (MỚI BỔ SUNG CHO CONTROLLER)
+    // CÁC HÀM THÊM/SỬA/XÓA 
     // ==========================================
     public function themSanPham($name, $price, $qty, $cat_id, $desc, $detail, $img) {
         $name = $this->db->real_escape_string($name);
@@ -71,13 +71,14 @@ class SanPhamModel {
     }
 
     // ==========================================
-    // CÁC HÀM DÙNG CHO TRANG CHỦ
+    // CÁC HÀM DÙNG CHO TRANG CHỦ (ĐÃ THÊM PHÂN TRANG)
     // ==========================================
     public function laySanPhamGiaRe() {
         return $this->db->query("SELECT * FROM products ORDER BY price ASC LIMIT 4");
     }
 
-    public function locSanPhamTrangChu($cat_id, $keyword) {
+    // Đã cập nhật tham số offset và limit
+    public function locSanPhamTrangChu($cat_id, $keyword, $offset = 0, $limit = 9) {
         $where_clause = "1=1";
         if ($cat_id !== null) {
             $cat_id = intval($cat_id);
@@ -87,10 +88,21 @@ class SanPhamModel {
             $safe_keyword = $this->db->real_escape_string($keyword);
             $where_clause .= " AND name LIKE '%$safe_keyword%'";
         }
-        return $this->db->query("SELECT * FROM products WHERE $where_clause ORDER BY id DESC");
+        return $this->db->query("SELECT * FROM products WHERE $where_clause ORDER BY id DESC LIMIT $offset, $limit");
     }
-    public function demTongSanPham() {
-        $res = $this->db->query("SELECT COUNT(id) as count FROM products");
+
+    // Hàm đếm số lượng để xử lý thuật toán chia trang
+    public function demSanPhamTrangChu($cat_id, $keyword) {
+        $where_clause = "1=1";
+        if ($cat_id !== null) {
+            $cat_id = intval($cat_id);
+            $where_clause .= " AND category_id = $cat_id";
+        }
+        if ($keyword !== null && $keyword !== '') {
+            $safe_keyword = $this->db->real_escape_string($keyword);
+            $where_clause .= " AND name LIKE '%$safe_keyword%'";
+        }
+        $res = $this->db->query("SELECT COUNT(id) as count FROM products WHERE $where_clause");
         return ($res && $res->num_rows > 0) ? $res->fetch_assoc()['count'] : 0;
     }
 }
