@@ -62,4 +62,9 @@
         <p class="mb-0">Hãy quay lại trang chủ để chọn món đồ ưng ý nhé.</p>
         <a href="index.php" class="btn btn-primary mt-3 px-4 rounded-pill">Tiếp tục mua sắm</a>
     </div>
+    public function capNhatThanhToan($order_id, $payment_status) {
+    $sql = "UPDATE orders SET payment_status = ? WHERE id = ?";
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute([$payment_status, $order_id]);
+}
 <?php endif; ?>

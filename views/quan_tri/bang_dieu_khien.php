@@ -63,6 +63,7 @@
         <a href="index.php?controller=nguoi_dung" class="btn btn-secondary"><i class="fas fa-users"></i> Người Dùng</a>  
         <?php if (isset($_SESSION['admin_role']) && $_SESSION['admin_role'] == 1): ?>
             <a href="index.php?controller=nhan_vien" class="btn btn-dark"><i class="fas fa-user-tie"></i> Nhân sự</a>
+            <a href="index.php?controller=bao_cao&action=index" class="btn btn-secondary"><i class="fas fa-chart-pie"></i> Báo cáo</a>
         <?php endif; ?>
     </div>
 </div>

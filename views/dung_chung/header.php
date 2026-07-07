@@ -10,6 +10,7 @@ if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
 ?>
 <!DOCTYPE html>
 <html lang="vi">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <head>
     <meta charset="UTF-8">
     <title>MyShop</title>

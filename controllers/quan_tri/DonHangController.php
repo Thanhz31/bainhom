@@ -53,10 +53,20 @@ class DonHangController {
             $this->model->capNhatTrangThai($order_id, $status);
 
             // 2. LOGIC HOÀN KHO: Nếu trạng thái là 3 (Hủy đơn) thì gọi hàm hoàn kho
-            if ($status == 3) {
-                $this->model->hoanLaiKho($order_id);
-            }
+            // 2. XỬ LÝ LOGIC KHI HỦY ĐƠN (STATUS = 3)
+if ($status == 3) 
+    {
+    // A. Hoàn lại kho
+    $this->model->hoanLaiKho($order_id);
 
+    // B. Kiểm tra và Hoàn tiền (Nếu đã thanh toán online)
+    $order_info = $this->model->layTheoId($order_id);
+    
+    // Nếu đơn hàng đã thanh toán (payment_status == 1), chuyển sang hoàn tiền (2)
+    if ($order_info['payment_status'] == 1) {
+        $this->model->capNhatThanhToan($order_id, 2); 
+    }
+}
             // 3. Load lại trang
             header("Location: index.php?controller=don_hang&action=chi_tiet&id=$order_id");
             exit();
