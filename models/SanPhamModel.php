@@ -117,18 +117,18 @@ class SanPhamModel {
         }
         return $reviews;
     }
-    // BẠN DÁN ĐOẠN NÀY VÀO TRONG CLASS SanPhamModel NHÉ
+// HÀM ĐÃ SỬA: Tự động cập nhật avg_rating và review_count
     public function themDanhGia($product_id, $user_id, $order_id, $rating, $comment) {
         $product_id = intval($product_id);
         $user_id = intval($user_id);
         $order_id = intval($order_id);
         $rating = intval($rating);
-        $comment = $this->db->real_escape_string($comment); // Chống SQL Injection
+        $comment = $this->db->real_escape_string($comment);
 
-        // 1. Kiểm tra xem người dùng đã đánh giá đơn hàng này chưa để tránh trùng lặp
+        // 1. Kiểm tra xem người dùng đã đánh giá đơn hàng này chưa
         $check = $this->db->query("SELECT id FROM reviews WHERE product_id = $product_id AND order_id = $order_id AND user_id = $user_id");
         if ($check && $check->num_rows > 0) {
-            return false; // Đã đánh giá rồi
+            return false;
         }
 
         // 2. Thêm đánh giá vào bảng reviews
@@ -136,8 +136,11 @@ class SanPhamModel {
                 VALUES ($product_id, $user_id, $order_id, $rating, '$comment', NOW())";
         
         if ($this->db->query($sql)) {
-            // 3. Cập nhật lại điểm trung bình (avg_rating) trong bảng products
-            $update_sql = "UPDATE products SET avg_rating = (SELECT AVG(rating) FROM reviews WHERE product_id = $product_id) WHERE id = $product_id";
+            // 3. CẬP NHẬT ĐIỂM TRUNG BÌNH VÀ SỐ LƯỢT ĐÁNH GIÁ VÀO BẢNG products
+            $update_sql = "UPDATE products SET 
+                           avg_rating = (SELECT AVG(rating) FROM reviews WHERE product_id = $product_id),
+                           review_count = (SELECT COUNT(id) FROM reviews WHERE product_id = $product_id)
+                           WHERE id = $product_id";
             $this->db->query($update_sql);
             return true;
         }
