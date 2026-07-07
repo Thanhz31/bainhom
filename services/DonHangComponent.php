@@ -13,13 +13,17 @@ class DonHangComponent implements DonHangInterface {
     }
 
     public function thanhToan($khach, $gio_hang) {
-        // 1. Tạo đơn hàng chính
+        // Lấy phương thức thanh toán, mặc định là 1 (COD) nếu không có
+        $payment_method = isset($khach['payment_method']) ? $khach['payment_method'] : 1;
+
+        // 1. Tạo đơn hàng chính - ĐÃ BỔ SUNG $payment_method
         $order_id = $this->donHangModel->taoDonHang(
             $khach['user_id'], 
             $khach['name'], 
             $khach['phone'], 
             $khach['address'], 
-            $khach['total']
+            $khach['total'],
+            $payment_method // TRUYỀN THÊM BIẾN NÀY XUỐNG MODEL
         );
 
         if ($order_id) {
