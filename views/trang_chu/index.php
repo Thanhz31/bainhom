@@ -1,5 +1,12 @@
 <!-- NHÚNG TRỰC TIẾP CSS GIAO DIỆN SHOPEE -->
 <style>
+    .banner-container {
+        height: 320px; /* Sếp có thể chỉnh số này nếu muốn cao/thấp hơn */
+    }
+    /* Đảm bảo ảnh banner phụ luôn chia đều không gian */
+    .sub-banner {
+        height: calc(50% - 5px);
+}
     /* KHUNG DANH MỤC */
     .shopee-cat-container {
     background: #fff;
@@ -91,45 +98,38 @@
    
 </style>
 <div class="row">
-    <!-- KHÔNG CÒN CỘT TRÁI. TOÀN BỘ NỘI DUNG SẼ CHIẾM FULL MÀN HÌNH (COL-12) -->
     <div class="col-12">
         
         <!-- ====================================
              1. KHUNG BANNER TỶ LỆ 8:4 GỌN GÀNG
         ==================================== -->
-        <div class="row g-2 mb-4">
-            <div class="col-md-8">
-                <div id="bannerKhuyenMai" class="carousel slide h-100 shadow-sm" data-bs-ride="carousel">
-                    <div class="carousel-inner rounded h-100">
-                        <div class="carousel-item active h-100">
-                            <img src="uploads/banner1.jpg" class="d-block w-100 h-100" style="object-fit: cover; min-height: 250px;" alt="Lễ hội bóng đá giảm 50%">
-                        </div>  
-                        <div class="carousel-item h-100">
-                            <img src="uploads/banner2.jpg" class="d-block w-100 h-100" style="object-fit: cover; min-height: 250px;" alt="Siêu sale giữa tháng">
-                        </div>
-                    </div>
-                    <button class="carousel-control-prev" type="button" data-bs-target="#bannerKhuyenMai" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#bannerKhuyenMai" data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    </button>
+        <div class="row g-2 banner-container mb-4">
+    <div class="col-md-8 h-100">
+        <div id="bannerKhuyenMai" class="carousel slide h-100 shadow-sm" data-bs-ride="carousel">
+            <div class="carousel-inner rounded h-100">
+                <div class="carousel-item active h-100">
+                    <img src="uploads/banner1.jpg" class="d-block w-100 h-100" style="object-fit: cover;" alt="Banner chính 1">
+                </div>
+                <div class="carousel-item h-100">
+                    <img src="uploads/banner2.jpg" class="d-block w-100 h-100" style="object-fit: cover;" alt="Banner chính 2">
                 </div>
             </div>
+        </div>
+    </div>
 
-            <div class="col-md-4 d-flex flex-column gap-2">
-                <div class="rounded overflow-hidden shadow-sm flex-fill">
-                    <a href="#">
-                        <img src="uploads/anhphu1.png" class="w-100 h-100" style="object-fit: cover; min-height: 120px;" alt="Banner Phụ 1">
-                    </a>
-                </div>
-                <div class="rounded overflow-hidden shadow-sm flex-fill">
-                    <a href="#">
-                        <img src="uploads/anhphu2.png" class="w-100 h-100" style="object-fit: cover; min-height: 120px;" alt="Banner Phụ 2">
-                    </a>
-                </div>
-            </div>
-        </div> 
+    <div class="col-md-4 h-100 d-flex flex-column justify-content-between">
+        <div class="sub-banner rounded overflow-hidden shadow-sm">
+            <a href="#">
+                <img src="uploads/anhphu1.png" class="w-100 h-100" style="object-fit: cover;" alt="Banner Phụ 1">
+            </a>
+        </div>
+        <div class="sub-banner rounded overflow-hidden shadow-sm">
+            <a href="#">
+                <img src="uploads/anhphu2.png" class="w-100 h-100" style="object-fit: cover;" alt="Banner Phụ 2">
+            </a>
+        </div>
+    </div>
+</div>
 
         <!-- ====================================
              2. LƯỚI DANH MỤC 2 HÀNG KIỂU SHOPEE
