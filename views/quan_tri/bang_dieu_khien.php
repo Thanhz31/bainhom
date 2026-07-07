@@ -64,6 +64,7 @@
         <?php if (isset($_SESSION['admin_role']) && $_SESSION['admin_role'] == 1): ?>
             <a href="index.php?controller=nhan_vien" class="btn btn-dark"><i class="fas fa-user-tie"></i> Nhân sự</a>
         <?php endif; ?>
+        <a href="index.php?controller=baocao" class="btn btn-secondary"><i class="fas fa-chart-line"></i> Báo cáo</a>
     </div>
 </div>
 
