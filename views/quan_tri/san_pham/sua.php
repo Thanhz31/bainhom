@@ -22,7 +22,7 @@
                 <div class="row">
                     <div class="col-md-6 mb-2">
                         <label class="fw-bold small">Giá (VNĐ)</label>
-                        <input type="number" name="price" class="form-control form-control-sm" value="<?php echo $product['price']; ?>" required min="0">
+                        <input type="number" name="price" class="form-control form-control-sm" value="<?php echo intval($product['price']); ?>" required min="0">
                     </div>
                     <div class="col-md-6 mb-2">
                         <label class="fw-bold small">Số lượng kho</label>
