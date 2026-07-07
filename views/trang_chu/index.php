@@ -2,11 +2,12 @@
 <style>
     /* KHUNG DANH MỤC */
     .shopee-cat-container {
-        background: #fff;
-        border-radius: 2px;
-        box-shadow: 0 1px 1px 0 rgba(0,0,0,.05);
-        margin-bottom: 25px;
-        overflow: hidden;
+    background: #fff;
+    border-radius: 2px;
+    box-shadow: 0 1px 1px 0 rgba(0,0,0,.05);
+    margin: 0 20px 25px 20px; 
+    position: relative;
+    overflow: visible;
     }
     .shopee-cat-header {
         padding: 15px 20px;
@@ -19,11 +20,14 @@
     /* LƯỚI DANH MỤC KÉO NGANG */
     .shopee-cat-scroll {
         display: grid;
-        grid-template-rows: repeat(2, 1fr); /* Ép hiển thị đúng 2 hàng */
-        grid-auto-flow: column; /* Các item sẽ tự động chạy sang ngang */
+        grid-template-rows: repeat(2, 1fr);
+        grid-auto-flow: column;
+        grid-auto-columns: 120px; /* Đặt độ rộng cố định cho cột để đảm bảo thẳng hàng */
         overflow-x: auto;
         overflow-y: hidden;
         border-top: 1px solid rgba(0,0,0,.05);
+        border-left: 1px solid rgba(0,0,0,.05); /* Thêm viền trái cho container */
+        background-color: #fff;
     }
     /* Thanh cuộn ngang thanh mảnh */
     .shopee-cat-scroll::-webkit-scrollbar {
@@ -38,7 +42,7 @@
     }
     /* TỪNG ITEM DANH MỤC */
     .shopee-cat-item {
-        width: 120px; /* Độ rộng mỗi ô */
+        width: 100%; /* Để item tự lấp đầy cột 120px */
         height: 130px;
         display: flex;
         flex-direction: column;
@@ -47,14 +51,15 @@
         text-align: center;
         text-decoration: none;
         color: rgba(0,0,0,.8);
-        border-right: 1px solid rgba(0,0,0,.05);
-        border-bottom: 1px solid rgba(0,0,0,.05);
+        border-right: 1px solid rgba(0,0,0,.05); /* Viền phải */
+        border-bottom: 1px solid rgba(0,0,0,.05); /* Viền dưới */
         transition: transform 0.1s, box-shadow 0.1s;
+        padding: 10px;
     }
-    .shopee-cat-item:hover {
-        box-shadow: 0 2px 8px rgba(0,0,0,.1);
+      .shopee-cat-item:hover {
+        box-shadow: inset 0 0 10px rgba(0,0,0,0.05); 
         z-index: 1;
-        transform: translateY(-1px);
+        background-color: #fafafa;
     }
     /* ẢNH/ICON DANH MỤC */
     .shopee-cat-img {
@@ -83,6 +88,7 @@
         -webkit-box-orient: vertical;
         overflow: hidden;
     }
+   
 </style>
 <div class="row">
     <!-- KHÔNG CÒN CỘT TRÁI. TOÀN BỘ NỘI DUNG SẼ CHIẾM FULL MÀN HÌNH (COL-12) -->
@@ -128,8 +134,11 @@
         <!-- ====================================
              2. LƯỚI DANH MỤC 2 HÀNG KIỂU SHOPEE
         ==================================== -->
-        <div class="shopee-cat-container">
+        <div class="shopee-cat-container position-relative">
             <div class="shopee-cat-header">DANH MỤC</div>
+           
+          
+
             <div class="shopee-cat-scroll">
                 
                 <!-- Nút Mặc định: Tất cả sản phẩm -->
@@ -139,22 +148,45 @@
                     </div>
                     <div class="shopee-cat-text">Tất cả<br>sản phẩm</div>
                 </a>
-
+                <?php 
+               $icon_map = [
+                 'thời trang nam' => 'uploads/icon-T.jpg',
+                 'thời trang nữ'  => 'uploads/icon-T-W.jpg',
+                 'Giày dép'       => 'uploads/icon-Shoe.jpg',
+                 'giày nữ'       => 'uploads/icon-Shoe-W.jpg',
+                 'Mũ'       => 'uploads/icon-hat.jpg',
+                 'quần áo cho bé'       => 'uploads/icon-baby.jpg',
+                 'Phụ kiện'       => 'uploads/icon-watch1.webp',
+                 'điện thoại'       => 'uploads/icon-phone1.jpg',
+                 'nhà sách online'       => 'uploads/icon-book.avif',
+                 'sắc đẹp'       => 'uploads/icon-son.jpg',
+                 'túi ví nữ'       => 'uploads/icon-P-W.webp',
+                 'đồ chơi'       => 'uploads/icon-toy1.jpg',
+                 'Mẹ và bé'       => 'uploads/icon-MB1.jpg',
+                 'balo & túi ví nam'       => 'uploads/icon-balo1.jpg',
+                 'dụng cụ và thiết bị tiện ích'       => 'uploads/icon-tool.jpg',
+                 'đồ điện gia dụng'       => 'uploads/icon-elec.jpg',
+                 'máy tính & laptop'       => 'uploads/icon-lap.webp',
+                 'máy ảnh & máy quay phim'       => 'uploads/icon-cam.webp',
+                 ];
+               ?>
                 <!-- Loop các danh mục từ Database -->
                 <?php foreach($categories as $cat): 
                     $border_color = (isset($_GET['cat_id']) && $_GET['cat_id'] == $cat['id']) ? 'border-color: #ee4d2d;' : '';
+
+                    $icon_src = isset($icon_map[$cat['name']]) ? $icon_map[$cat['name']] : 'uploads/icons/default.png';
                 ?>
                     <a href="index.php?controller=trang_chu&cat_id=<?php echo $cat['id']; ?>" class="shopee-cat-item">
                         <div class="shopee-cat-img" style="<?php echo $border_color; ?>">
                             <!-- Avatar tự tạo từ tên danh mục -->
-                            <img src="https://ui-avatars.com/api/?name=<?php echo urlencode($cat['name']); ?>&background=random&color=fff&size=70&bold=true" alt="<?php echo $cat['name']; ?>">
+                             <img src="<?php echo $icon_src; ?>" alt="<?php echo $cat['name']; ?>" style="object-fit: contain;">
                         </div>
                         <div class="shopee-cat-text"><?php echo $cat['name']; ?></div>
                     </a>
                 <?php endforeach; ?>
                 
             </div>
-        </div>
+        </div>      
 
         <!-- ====================================
              3. SẢN PHẨM GIÁ RẺ (FLASH SALE)

@@ -50,3 +50,9 @@ footer {
 .card-img-top {
     border-bottom: 1px solid #eee;
 }
+.carousel-inner img, .flex-fill img {
+    transition: transform 0.4s ease;
+}
+.flex-fill:hover img {
+    transform: scale(1.05); /* Phóng to 5% */
+}
