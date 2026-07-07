@@ -1,5 +1,4 @@
 <div class="row">
-    <!-- CỘT BÊN TRÁI: DANH MỤC SẢN PHẨM -->
     <div class="col-md-3 mb-4">
         <div class="list-group shadow-sm sticky-top" style="top: 80px; z-index: 1;">
             <a href="#" class="list-group-item list-group-item-action active fw-bold text-uppercase">
@@ -18,12 +17,9 @@
         </div>
     </div>
 
-    <!-- CỘT BÊN PHẢI: NỘI DUNG CHÍNH -->
     <div class="col-md-9">
         
-        <!-- KHUNG BANNER KIỂU SHOPEE -->
         <div class="row g-2 mb-4">
-            <!-- Banner Carousel Chính -->
             <div class="col-md-8">
                 <div id="bannerKhuyenMai" class="carousel slide h-100 shadow-sm" data-bs-ride="carousel">
                     <div class="carousel-inner rounded h-100">
@@ -43,7 +39,6 @@
                 </div>
             </div>
 
-            <!-- 2 Banner Nhỏ Bên Phải -->
             <div class="col-md-4 d-flex flex-column gap-2">
                 <div class="rounded overflow-hidden shadow-sm flex-fill">
                     <a href="#">
@@ -58,8 +53,7 @@
             </div>
         </div> 
 
-        <!-- KHU VỰC SẢN PHẨM GIÁ RẺ -->
-        <?php if(!isset($_GET['q']) && !isset($_GET['cat_id']) && $res_top): ?>
+        <?php if(!isset($_GET['q']) && !isset($_GET['cat_id']) && isset($res_top) && $res_top): ?>
         <div class="mb-5">
             <h4 class="text-uppercase border-bottom pb-2 border-danger text-danger">
                 <i class="fas fa-fire"></i> Sản Phẩm Giá rẻ
@@ -68,12 +62,25 @@
                 <?php while($row = $res_top->fetch_assoc()): ?>
                 <div class="col-md-3 col-6 mb-3">
                     <div class="card h-100 border-0 shadow-sm product-card">
-                        <a href="index.php?controller=trang_chu&action=chi_tiet&id=<?php echo $row['id']; ?>" target="_blank">
+                        <a href="index.php?controller=trang_chu&action=chi_tiet&id=<?php echo $row['id']; ?>">
                             <img src="uploads/<?php echo $row['image']; ?>" class="card-img-top p-2" style="height: 150px; object-fit: contain;">
                         </a>
-                        <div class="card-body p-2 text-center">
-                            <h6 class="card-title text-truncate"><a href="index.php?controller=trang_chu&action=chi_tiet&id=<?php echo $row['id']; ?>" class="text-decoration-none text-dark"><?php echo $row['name']; ?></a></h6>
-                            <p class="text-danger fw-bold mb-0"><?php echo number_format($row['price']); ?> ₫</p>
+                        <div class="card-body p-2 text-center d-flex flex-column">
+                            <h6 class="card-title text-truncate mb-1"><a href="index.php?controller=trang_chu&action=chi_tiet&id=<?php echo $row['id']; ?>" class="text-decoration-none text-dark"><?php echo $row['name']; ?></a></h6>
+                            
+                            <div class="d-flex justify-content-center align-items-center mb-1" style="font-size: 0.7rem;">
+                                <div class="text-warning me-1">
+                                    <?php 
+                                    $rating_top = isset($row['avg_rating']) ? round($row['avg_rating']) : 0; 
+                                    for ($i = 1; $i <= 5; $i++) {
+                                        echo ($i <= $rating_top) ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>';
+                                    }
+                                    ?>
+                                </div>
+                                <span class="text-muted fw-bold"><?php echo isset($row['avg_rating']) && $row['avg_rating'] > 0 ? number_format($row['avg_rating'], 1) : "0.0"; ?></span>
+                            </div>
+
+                            <p class="text-danger fw-bold mb-0 mt-auto"><?php echo number_format($row['price']); ?> ₫</p>
                             <small class="text-muted" style="font-size: 0.8rem;">Đã bán: <?php echo isset($row['sold_count']) ? $row['sold_count'] : 0; ?></small>
                         </div>
                     </div>
@@ -83,13 +90,12 @@
         </div>
         <?php endif; ?>
 
-        <!-- KHU VỰC DANH SÁCH SẢN PHẨM CHÍNH -->
         <h4 class="text-uppercase border-bottom pb-2 border-secondary mb-3">
-            <?php echo $section_title; ?>
+            <?php echo isset($section_title) ? $section_title : "Sản Phẩm Mới"; ?>
         </h4>
 
         <div class="row">
-            <?php if ($products && $products->num_rows > 0): ?>
+            <?php if (isset($products) && $products && $products->num_rows > 0): ?>
                 <?php while($row = $products->fetch_assoc()): 
                     $is_out_of_stock = ($row['quantity'] <= 0);
                     $opacity = $is_out_of_stock ? "opacity: 0.6; filter: grayscale(100%);" : "";
@@ -99,24 +105,40 @@
                     <div class="card h-100 shadow-sm product-card position-relative border-0">
                         <?php echo $badge; ?>
                         
-                        <a href="index.php?controller=trang_chu&action=chi_tiet&id=<?php echo $row['id']; ?>" target="_blank">
+                        <a href="index.php?controller=trang_chu&action=chi_tiet&id=<?php echo $row['id']; ?>">
                             <img src="uploads/<?php echo $row['image']; ?>" class="card-img-top" style="height: 220px; object-fit: cover; <?php echo $opacity; ?>">
                         </a>
                         
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title text-truncate" title="<?php echo $row['name']; ?>"><?php echo $row['name']; ?></h5>
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <span class="text-danger fw-bold fs-5"><?php echo number_format($row['price']); ?> ₫</span>
+                        <div class="card-body d-flex flex-column p-3">
+                            <h6 class="card-title text-truncate mb-2">
+                                <a href="index.php?controller=trang_chu&action=chi_tiet&id=<?php echo $row['id']; ?>" class="text-dark text-decoration-none">
+                                    <?php echo $row['name']; ?>
+                                </a>
+                            </h6>
+                            
+                            <div class="d-flex align-items-center mb-2" style="font-size: 0.8rem;">
+                                <div class="text-warning me-1">
+                                    <?php 
+                                    $rating = isset($row['avg_rating']) ? round($row['avg_rating']) : 0; 
+                                    for ($i = 1; $i <= 5; $i++) {
+                                        echo ($i <= $rating) ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>';
+                                    }
+                                    ?>
+                                </div>
+                                <span class="text-muted border-start ps-2 ms-1">
+                                    Đã bán: <?php echo isset($row['sold_count']) ? $row['sold_count'] : 0; ?>
+                                </span>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center mt-auto mb-3">
+                                <span class="text-danger fw-bold fs-6"><?php echo number_format($row['price']); ?> ₫</span>
                                 <small class="text-muted" style="font-size: 0.85rem;">
-                                    <?php echo $is_out_of_stock ? "Tạm hết" : "Kho: " . $row['quantity']; ?>
+                                    Kho: <?php echo $row['quantity']; ?>
                                 </small>
                             </div>
                             
-                            <form action="index.php?controller=gio_hang&action=them" method="POST" class="mt-auto">
+                            <form action="index.php?controller=gio_hang&action=them" method="POST" class="w-100">
                                 <input type="hidden" name="product_id" value="<?php echo $row['id']; ?>">
-                                <input type="hidden" name="product_name" value="<?php echo $row['name']; ?>">
-                                <input type="hidden" name="product_price" value="<?php echo $row['price']; ?>">
-                                <input type="hidden" name="product_image" value="<?php echo $row['image']; ?>">
                                 <input type="hidden" name="qty" value="1">
                                 
                                 <button type="submit" name="add_to_cart" class="btn btn-outline-danger w-100 rounded-pill" <?php if($is_out_of_stock) echo 'disabled'; ?>>
@@ -136,19 +158,16 @@
             <?php endif; ?>
         </div>
         
-        <!-- KHU VỰC THANH PHÂN TRANG (PAGINATION) NẰM NGAY DƯỚI LƯỚI SẢN PHẨM -->
         <?php if (isset($total_pages) && $total_pages > 1): ?>
         <nav aria-label="Page navigation" class="mt-4 mb-5">
             <ul class="pagination justify-content-center">
                 
-                <!-- Nút 'Trang trước' -->
                 <li class="page-item <?php echo ($page <= 1) ? 'disabled' : ''; ?>">
                     <a class="page-link" href="?controller=trang_chu&page=<?php echo $page - 1; ?><?php echo isset($_GET['cat_id']) ? '&cat_id='.$_GET['cat_id'] : ''; ?><?php echo isset($_GET['q']) ? '&q='.$_GET['q'] : ''; ?>" aria-label="Previous">
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                 </li>
                 
-                <!-- Vòng lặp in ra các số trang 1, 2, 3... -->
                 <?php for($i = 1; $i <= $total_pages; $i++): ?>
                 <li class="page-item <?php echo ($page == $i) ? 'active' : ''; ?>">
                     <a class="page-link" href="?controller=trang_chu&page=<?php echo $i; ?><?php echo isset($_GET['cat_id']) ? '&cat_id='.$_GET['cat_id'] : ''; ?><?php echo isset($_GET['q']) ? '&q='.$_GET['q'] : ''; ?>">
@@ -157,7 +176,6 @@
                 </li>
                 <?php endfor; ?>
                 
-                <!-- Nút 'Trang sau' -->
                 <li class="page-item <?php echo ($page >= $total_pages) ? 'disabled' : ''; ?>">
                     <a class="page-link" href="?controller=trang_chu&page=<?php echo $page + 1; ?><?php echo isset($_GET['cat_id']) ? '&cat_id='.$_GET['cat_id'] : ''; ?><?php echo isset($_GET['q']) ? '&q='.$_GET['q'] : ''; ?>" aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
