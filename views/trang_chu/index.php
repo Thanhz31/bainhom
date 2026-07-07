@@ -20,6 +20,7 @@
 
     <!-- CỘT BÊN PHẢI: NỘI DUNG CHÍNH -->
     <div class="col-md-9">
+<<<<<<< HEAD
         
         <!-- KHUNG BANNER KIỂU SHOPEE ĐÃ ĐƯỢC CẬP NHẬT -->
         <div class="row g-2 mb-4">
@@ -60,6 +61,24 @@
         <!-- HẾT KHUNG BANNER -->
 
         <!-- KHU VỰC SẢN PHẨM GIÁ RẺ -->
+=======
+        <div id="bannerKhuyenMai" class="carousel slide mb-4 shadow-sm" data-bs-ride="carousel">
+  <div class="carousel-inner rounded">
+    <div class="carousel-item active">
+      <img src="uploads/banner1.jpg" class="d-block w-100" alt="Lễ hội bóng đá giảm 50%">
+    </div>  
+    <div class="carousel-item">
+      <img src="uploads/banner2.jpg" class="d-block w-100" alt="Siêu sale giữa tháng">
+    </div>
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#bannerKhuyenMai" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#bannerKhuyenMai" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+  </button>
+</div>
+>>>>>>> 29f501d389f1b6015ad7f032558dbb031ba77d98
         <?php if(!isset($_GET['q']) && !isset($_GET['cat_id']) && $res_top): ?>
         <div class="mb-5">
             <h4 class="text-uppercase border-bottom pb-2 border-danger text-danger">
@@ -73,7 +92,7 @@
                             <img src="uploads/<?php echo $row['image']; ?>" class="card-img-top p-2" style="height: 150px; object-fit: contain;">
                         </a>
                         <div class="card-body p-2 text-center">
-                            <h6 class="card-title text-truncate"><a href="index.php?controller=trang_chu&action=chi_tiet&id=<?php echo $row['id']; ?>" class="text-decoration-none text-dark"><?php echo $row['name']; ?></a></h6>
+<h6 class="card-title text-truncate"><a href="index.php?controller=trang_chu&action=chi_tiet&id=<?php echo $row['id']; ?>" class="text-decoration-none text-dark"><?php echo $row['name']; ?></a></h6>
                             <p class="text-danger fw-bold mb-0"><?php echo number_format($row['price']); ?> ₫</p>
                             <small class="text-muted" style="font-size: 0.8rem;">Đã bán: <?php echo isset($row['sold_count']) ? $row['sold_count'] : 0; ?></small>
                         </div>
@@ -116,7 +135,7 @@
                             <form action="index.php?controller=gio_hang&action=them" method="POST" class="mt-auto">
                                 <input type="hidden" name="product_id" value="<?php echo $row['id']; ?>">
                                 <input type="hidden" name="product_name" value="<?php echo $row['name']; ?>">
-                                <input type="hidden" name="product_price" value="<?php echo $row['price']; ?>">
+<input type="hidden" name="product_price" value="<?php echo $row['price']; ?>">
                                 <input type="hidden" name="product_image" value="<?php echo $row['image']; ?>">
                                 <input type="hidden" name="qty" value="1">
                                 
