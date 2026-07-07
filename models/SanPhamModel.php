@@ -38,7 +38,7 @@ class SanPhamModel {
     }
 
     // ==========================================
-    // CÁC HÀM THÊM/SỬA/XÓA 
+    // CÁC HÀM THÊM/SỬA/XÓA (MỚI BỔ SUNG CHO CONTROLLER)
     // ==========================================
     public function themSanPham($name, $price, $qty, $cat_id, $desc, $detail, $img) {
         $name = $this->db->real_escape_string($name);
@@ -71,14 +71,13 @@ class SanPhamModel {
     }
 
     // ==========================================
-    // CÁC HÀM DÙNG CHO TRANG CHỦ (ĐÃ THÊM PHÂN TRANG)
+    // CÁC HÀM DÙNG CHO TRANG CHỦ
     // ==========================================
     public function laySanPhamGiaRe() {
         return $this->db->query("SELECT * FROM products ORDER BY price ASC LIMIT 4");
     }
 
-    // Đã cập nhật tham số offset và limit
-    public function locSanPhamTrangChu($cat_id, $keyword, $offset = 0, $limit = 9) {
+    public function locSanPhamTrangChu($cat_id, $keyword) {
         $where_clause = "1=1";
         if ($cat_id !== null) {
             $cat_id = intval($cat_id);
@@ -88,30 +87,61 @@ class SanPhamModel {
             $safe_keyword = $this->db->real_escape_string($keyword);
             $where_clause .= " AND name LIKE '%$safe_keyword%'";
         }
-        return $this->db->query("SELECT * FROM products WHERE $where_clause ORDER BY id DESC LIMIT $offset, $limit");
+        return $this->db->query("SELECT * FROM products WHERE $where_clause ORDER BY id DESC");
     }
-
-    // Hàm đếm số lượng để xử lý thuật toán chia trang
-    public function demSanPhamTrangChu($cat_id, $keyword) {
-        $where_clause = "1=1";
-        if ($cat_id !== null) {
-            $cat_id = intval($cat_id);
-            $where_clause .= " AND category_id = $cat_id";
-        }
-        if ($keyword !== null && $keyword !== '') {
-            $safe_keyword = $this->db->real_escape_string($keyword);
-            $where_clause .= " AND name LIKE '%$safe_keyword%'";
-        }
-        $res = $this->db->query("SELECT COUNT(id) as count FROM products WHERE $where_clause");
-        return ($res && $res->num_rows > 0) ? $res->fetch_assoc()['count'] : 0;
-    }
-
-    // ==========================================
-    // HÀM DÙNG CHO DASHBOARD ADMIN (ĐÃ KHÔI PHỤC)
-    // ==========================================
+    
     public function demTongSanPham() {
         $res = $this->db->query("SELECT COUNT(id) as count FROM products");
         return ($res && $res->num_rows > 0) ? $res->fetch_assoc()['count'] : 0;
+    }
+
+    // ==========================================
+    // HÀM MỚI BỔ SUNG: LẤY BÌNH LUẬN ĐÁNH GIÁ SẢN PHẨM
+    // ==========================================
+    public function layBinhLuanTheoSanPham($product_id) {
+        $product_id = intval($product_id); // Chống SQL Injection
+        
+        // Câu lệnh SQL kéo dữ liệu từ bảng reviews và bảng users
+        $sql = "SELECT r.*, u.full_name 
+                FROM reviews r 
+                JOIN users u ON r.user_id = u.id 
+                WHERE r.product_id = $product_id 
+                ORDER BY r.created_at DESC";
+                
+        $result = $this->db->query($sql);
+        $reviews = [];
+        if ($result && $result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $reviews[] = $row;
+            }
+        }
+        return $reviews;
+    }
+    // BẠN DÁN ĐOẠN NÀY VÀO TRONG CLASS SanPhamModel NHÉ
+    public function themDanhGia($product_id, $user_id, $order_id, $rating, $comment) {
+        $product_id = intval($product_id);
+        $user_id = intval($user_id);
+        $order_id = intval($order_id);
+        $rating = intval($rating);
+        $comment = $this->db->real_escape_string($comment); // Chống SQL Injection
+
+        // 1. Kiểm tra xem người dùng đã đánh giá đơn hàng này chưa để tránh trùng lặp
+        $check = $this->db->query("SELECT id FROM reviews WHERE product_id = $product_id AND order_id = $order_id AND user_id = $user_id");
+        if ($check && $check->num_rows > 0) {
+            return false; // Đã đánh giá rồi
+        }
+
+        // 2. Thêm đánh giá vào bảng reviews
+        $sql = "INSERT INTO reviews (product_id, user_id, order_id, rating, comment, created_at) 
+                VALUES ($product_id, $user_id, $order_id, $rating, '$comment', NOW())";
+        
+        if ($this->db->query($sql)) {
+            // 3. Cập nhật lại điểm trung bình (avg_rating) trong bảng products
+            $update_sql = "UPDATE products SET avg_rating = (SELECT AVG(rating) FROM reviews WHERE product_id = $product_id) WHERE id = $product_id";
+            $this->db->query($update_sql);
+            return true;
+        }
+        return false;
     }
 }
 ?>

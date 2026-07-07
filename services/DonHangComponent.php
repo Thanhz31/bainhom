@@ -40,5 +40,12 @@ class DonHangComponent implements DonHangInterface {
     public function layLichSu($user_id) {
         return $this->donHangModel->layDonHangCuaKhach($user_id);
     }
+    public function layChiTietDonHang($order_id) {
+        return $this->donHangModel->layTheoId($order_id);
+    }
+
+    public function layChiTietSanPhamDonHang($order_id) {
+        return $this->donHangModel->layChiTietDonHang($order_id);
+    }
 }
 ?>

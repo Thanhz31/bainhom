@@ -1,6 +1,5 @@
 <div class="container mt-4 mb-5">
     <div class="d-flex align-items-center gap-3 mb-4 border-bottom pb-3">
-        <!-- Nút Trở về lịch sử -->
         <a href="index.php?controller=tai_khoan&action=don_hang" class="btn btn-outline-secondary btn-sm shadow-sm">
             <i class="fas fa-arrow-left me-1"></i> Trở về lịch sử
         </a>
@@ -8,19 +7,19 @@
     </div>
 
     <div class="row">
-        <!-- Cột trái: Danh sách sản phẩm -->
         <div class="col-md-8">
             <div class="card shadow-sm mb-4 border-0">
                 <div class="card-header bg-dark text-white fw-bold">Sản phẩm đã mua</div>
-                <div class="card-body p-0">
+                <div class="card-body p-0 table-responsive">
                     <table class="table table-hover mb-0 align-middle">
                         <thead class="table-light">
                             <tr class="text-center">
                                 <th>Hình ảnh</th>
-                                <th>Tên sản phẩm</th>
+                                <th style="min-width: 150px;">Tên sản phẩm</th>
                                 <th>Số lượng</th>
                                 <th>Đơn giá</th>
                                 <th>Thành tiền</th>
+                                <th>Thao tác</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -29,15 +28,31 @@
                                 <td class="text-center"><img src="uploads/<?php echo $item['image']; ?>" width="50" class="rounded border"></td>
                                 <td class="fw-bold"><?php echo $item['name']; ?></td>
                                 <td class="text-center"><?php echo $item['quantity']; ?></td>
-                                <td class="text-end"><?php echo number_format($item['price']); ?> ₫</td>
-                                <td class="text-end fw-bold text-danger"><?php echo number_format($item['price'] * $item['quantity']); ?> ₫</td>
+                                <td class="text-end" style="white-space: nowrap;"><?php echo number_format($item['price']); ?> ₫</td>
+                                <td class="text-end fw-bold text-danger" style="white-space: nowrap;"><?php echo number_format($item['price'] * $item['quantity']); ?> ₫</td>
+                                
+                                <td class="text-center">
+                                    <?php 
+                                    // Chỉ hiện nút khi đơn hàng đã giao thành công (status = 2)
+                                    if ($order_info['status'] == 2): 
+                                        // Dự phòng trường hợp mảng trả về là id thay vì product_id
+                                        $pid = isset($item['product_id']) ? $item['product_id'] : $item['id'];
+                                    ?>
+                                        <a href="index.php?controller=danh_gia&action=viet_danh_gia&product_id=<?php echo $pid; ?>&order_id=<?php echo $order_info['id']; ?>" 
+                                           class="btn btn-sm btn-outline-warning fw-bold shadow-sm" style="white-space: nowrap;">
+                                            <i class="fas fa-star"></i> Đánh giá
+                                        </a>
+                                    <?php else: ?>
+                                        <span class="text-muted small" style="white-space: nowrap;"><i class="fas fa-box"></i> Chờ nhận hàng</span>
+                                    <?php endif; ?>
+                                </td>
                             </tr>
                             <?php endforeach; ?>
                         </tbody>
                         <tfoot>
                             <tr>
-                                <td colspan="4" class="text-end fw-bold text-uppercase">TỔNG CỘNG:</td>
-                                <td class="text-end text-danger fw-bold fs-5"><?php echo number_format($order_info['total_money']); ?> ₫</td>
+                                <td colspan="5" class="text-end fw-bold text-uppercase">TỔNG CỘNG:</td>
+                                <td class="text-end text-danger fw-bold fs-5" style="white-space: nowrap;"><?php echo number_format($order_info['total_money']); ?> ₫</td>
                             </tr>
                         </tfoot>
                     </table>
@@ -45,9 +60,7 @@
             </div>
         </div>
 
-        <!-- Cột phải: Thông tin giao hàng và Trạng thái -->
         <div class="col-md-4">
-            <!-- Thông tin người nhận -->
             <div class="card shadow-sm border-0 mb-3">
                 <div class="card-header bg-info text-white fw-bold">Thông tin giao hàng</div>
                 <div class="card-body">
@@ -58,7 +71,6 @@
                 </div>
             </div>
 
-            <!-- Khối trạng thái đơn hàng (CHỈ HIỂN THỊ TRẠNG THÁI) -->
             <div class="card shadow-sm border-0 mb-3">
                 <div class="card-header bg-warning text-dark fw-bold">Trạng thái đơn hàng</div>
                 <div class="card-body text-center">
@@ -77,7 +89,6 @@
                 </div>
             </div>
 
-            <!-- Khối nút hủy đơn riêng biệt (Chỉ hiển thị khi status == 0) -->
             <?php if ($order_info['status'] == 0): ?>
             <div class="card shadow-sm border-0">
                 <div class="card-body text-center p-3">

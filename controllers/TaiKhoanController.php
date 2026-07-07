@@ -93,7 +93,34 @@ class TaiKhoanController {
 
         require_once '../views/tai_khoan/quen_mat_khau.php';
     }
-    
+    // BẠN DÁN ĐOẠN NÀY VÀO TRONG CLASS TaiKhoanController
+    public function chi_tiet_don_hang() {
+        // 1. Kiểm tra đăng nhập
+        if (!isset($_SESSION['user'])) {
+            header("Location: index.php?controller=tai_khoan&action=dang_nhap");
+            exit();
+        }
+
+        // 2. Lấy ID đơn hàng từ URL
+        $order_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+        
+        // 3. Khởi tạo Service để lấy dữ liệu
+        $dhService = new DonHangComponent($this->db);
+        
+        // 4. Lấy thông tin đơn hàng và chi tiết đơn hàng
+        $order_info = $dhService->layChiTietDonHang($order_id);
+        $details = $dhService->layChiTietSanPhamDonHang($order_id);
+
+        // 5. Kiểm tra xem đơn hàng có thuộc về user này không (bảo mật)
+        if (!$order_info || $order_info['user_id'] != $_SESSION['user']['id']) {
+            die("Đơn hàng không tồn tại hoặc bạn không có quyền truy cập!");
+        }
+
+        // 6. Hiển thị view
+        require_once '../views/dung_chung/header.php';
+        require_once '../views/tai_khoan/chi_tiet_don_hang.php';
+        require_once '../views/dung_chung/footer.php';
+    }
     
 }
 ?>
