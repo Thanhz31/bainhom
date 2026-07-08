@@ -6,7 +6,7 @@
     /* Đảm bảo ảnh banner phụ luôn chia đều không gian */
     .sub-banner {
         height: calc(50% - 5px);
-}
+    }
     /* KHUNG DANH MỤC */
     .shopee-cat-container {
     background: #fff;
