@@ -27,7 +27,7 @@ body {
 
 .product-card:hover { 
     transform: translateY(-5px); 
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important; 
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1); 
 }
 
 /* Sidebar danh mục */
@@ -50,6 +50,12 @@ footer {
 .card-img-top {
     border-bottom: 1px solid #eee;
 }
+.carousel-inner img, .flex-fill img {
+    transition: transform 0.4s ease;
+}
+.flex-fill:hover img {
+    transform: scale(1.05); /* Phóng to 5% */
+}
 
 /* ================= REGISTER & LOGIN ================= */
 
@@ -70,24 +76,18 @@ footer {
 }
 
 
-.register-card,
-.login-card{
-
-    width:100%;
-    max-width:550px;
-
-    background:rgba(255,255,255,.95);
-
-    border-radius:20px;
-
-    padding:35px;
-
-    box-shadow:0 15px 40px rgba(0,0,0,.15);
-
-    backdrop-filter:blur(10px);
-
+.register-card .btn-danger,
+.login-card .btn-danger {
+    border-radius: 12px;
+    padding: 12px;
+    font-weight: bold;
+    transition: .3s;
 }
-
+.register-card .btn-danger:hover,
+.login-card .btn-danger:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(220,53,69,.35);
+}
 .register-logo,
 .login-logo{
 
@@ -126,26 +126,6 @@ footer {
     border:none;
 
     border-radius:12px 0 0 12px;
-
-}
-
-.btn-danger{
-
-    border-radius:12px;
-
-    padding:12px;
-
-    font-weight:bold;
-
-    transition:.3s;
-
-}
-
-.btn-danger:hover{
-
-    transform:translateY(-3px);
-
-    box-shadow:0 10px 25px rgba(220,53,69,.35);
 
 }
 

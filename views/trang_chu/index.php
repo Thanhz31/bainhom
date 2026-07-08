@@ -1,58 +1,168 @@
+<!-- NHÚNG TRỰC TIẾP CSS GIAO DIỆN SHOPEE -->
+<style>
+    .banner-container {
+        height: 320px; /* Sếp có thể chỉnh số này nếu muốn cao/thấp hơn */
+    }
+    /* Đảm bảo ảnh banner phụ luôn chia đều không gian */
+    .sub-banner {
+        height: calc(50% - 5px);
+    }
+    /* KHUNG DANH MỤC */
+    .shopee-cat-container {
+    background: #fff;
+    border-radius: 2px;
+    box-shadow: 0 1px 1px 0 rgba(0,0,0,.05);
+    margin: 0 20px 25px 20px; 
+    position: relative;
+    overflow: visible;
+    }
+    .shopee-cat-header {
+        padding: 15px 20px;
+        font-size: 1rem;
+        color: rgba(0,0,0,.54);
+        font-weight: 500;
+        text-transform: uppercase;
+        border-bottom: 1px solid rgba(0,0,0,.05);
+    }
+    /* LƯỚI DANH MỤC KÉO NGANG */
+    .shopee-cat-scroll {
+        display: grid;
+        grid-template-rows: repeat(2, 1fr);
+        grid-auto-flow: column;
+        grid-auto-columns: 120px; /* Đặt độ rộng cố định cho cột để đảm bảo thẳng hàng */
+        overflow-x: auto;
+        overflow-y: hidden;
+        border-top: 1px solid rgba(0,0,0,.05);
+        border-left: 1px solid rgba(0,0,0,.05); /* Thêm viền trái cho container */
+        background-color: #fff;
+    }
+    /* Thanh cuộn ngang thanh mảnh */
+    .shopee-cat-scroll::-webkit-scrollbar {
+        height: 6px;
+    }
+    .shopee-cat-scroll::-webkit-scrollbar-thumb {
+        background-color: #e5e5e5;
+        border-radius: 10px;
+    }
+    .shopee-cat-scroll:hover::-webkit-scrollbar-thumb {
+        background-color: #bfbfbf;
+    }
+    /* TỪNG ITEM DANH MỤC */
+    .shopee-cat-item {
+        width: 100%; /* Để item tự lấp đầy cột 120px */
+        height: 130px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        text-decoration: none;
+        color: rgba(0,0,0,.8);
+        border-right: 1px solid rgba(0,0,0,.05); /* Viền phải */
+        border-bottom: 1px solid rgba(0,0,0,.05); /* Viền dưới */
+        transition: transform 0.1s, box-shadow 0.1s;
+        padding: 10px;
+    }
+      .shopee-cat-item:hover {
+        box-shadow: inset 0 0 10px rgba(0,0,0,0.05); 
+        z-index: 1;
+        background-color: #fafafa;
+    }
+    /* ẢNH/ICON DANH MỤC */
+    .shopee-cat-img {
+        width: 70px;
+        height: 70px;
+        margin-bottom: 10px;
+        border-radius: 50%;
+        background: #f8f9fa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        border: 1px solid #f0f0f0;
+    }
+    .shopee-cat-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .shopee-cat-text {
+        font-size: 0.85rem;
+        line-height: 1.2;
+        padding: 0 5px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+   
+</style>
 <div class="row">
-    <div class="col-md-3 mb-4">
-        <div class="list-group shadow-sm sticky-top" style="top: 80px; z-index: 1;">
-            <a href="#" class="list-group-item list-group-item-action active fw-bold text-uppercase">
-                <i class="fas fa-bars me-2"></i> Danh mục
-            </a>
-            <a href="index.php" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                Tất cả sản phẩm <i class="fas fa-chevron-right text-muted small"></i>
-            </a>
-            <?php foreach($categories as $cat): 
-                $active = (isset($_GET['cat_id']) && $_GET['cat_id'] == $cat['id']) ? 'bg-light fw-bold text-danger' : '';
-            ?>
-                <a href="index.php?controller=trang_chu&cat_id=<?php echo $cat['id']; ?>" class="list-group-item list-group-item-action <?php echo $active; ?> d-flex justify-content-between align-items-center">
-                    <?php echo $cat['name']; ?> <i class="fas fa-chevron-right text-muted small"></i>
-                </a>
-            <?php endforeach; ?>
+    <div class="col-12">
+        
+     
+        <div class="row g-2 banner-container mb-4">
+    <div class="col-md-8 h-100">
+        <div id="bannerKhuyenMai" class="carousel slide h-100 shadow-sm" data-bs-ride="carousel">
+            <div class="carousel-inner rounded h-100">
+                <div class="carousel-item active h-100">
+                    <img src="uploads/banner1.jpg" class="d-block w-100 h-100" style="object-fit: cover;" alt="Banner chính 1">
+                </div>
+                <div class="carousel-item h-100">
+                    <img src="uploads/banner2.jpg" class="d-block w-100 h-100" style="object-fit: cover;" alt="Banner chính 2">
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="col-md-9">
-        
-        <div class="row g-2 mb-4">
-            <div class="col-md-8">
-                <div id="bannerKhuyenMai" class="carousel slide h-100 shadow-sm" data-bs-ride="carousel">
-                    <div class="carousel-inner rounded h-100">
-                        <div class="carousel-item active h-100">
-                            <img src="uploads/banner1.jpg" class="d-block w-100 h-100" style="object-fit: cover; min-height: 250px;" alt="Lễ hội bóng đá giảm 50%">
-                        </div>  
-                        <div class="carousel-item h-100">
-                            <img src="uploads/banner2.jpg" class="d-block w-100 h-100" style="object-fit: cover; min-height: 250px;" alt="Siêu sale giữa tháng">
-                        </div>
+    <div class="col-md-4 h-100 d-flex flex-column justify-content-between">
+        <div class="sub-banner rounded overflow-hidden shadow-sm">
+            <a href="#">
+                <img src="uploads/anhphu1.png" class="w-100 h-100" style="object-fit: cover;" alt="Banner Phụ 1">
+            </a>
+        </div>
+        <div class="sub-banner rounded overflow-hidden shadow-sm">
+            <a href="#">
+                <img src="uploads/anhphu2.png" class="w-100 h-100" style="object-fit: cover;" alt="Banner Phụ 2">
+            </a>
+        </div>
+    </div>
+</div>
+
+      
+        <div class="shopee-cat-container position-relative">
+            <div class="shopee-cat-header">DANH MỤC</div>
+           
+          
+
+            <div class="shopee-cat-scroll">
+                
+                <!-- Nút Mặc định: Tất cả sản phẩm -->
+                <a href="index.php" class="shopee-cat-item">
+                    <div class="shopee-cat-img" style="<?php echo (!isset($_GET['cat_id'])) ? 'border-color: #ee4d2d;' : ''; ?>">
+                        <img src="https://cdn-icons-png.flaticon.com/512/2544/2544087.png" alt="All" class="p-2">
                     </div>
-                    <button class="carousel-control-prev" type="button" data-bs-target="#bannerKhuyenMai" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#bannerKhuyenMai" data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    </button>
-                </div>
-            </div>
-
-            <div class="col-md-4 d-flex flex-column gap-2">
-                <div class="rounded overflow-hidden shadow-sm flex-fill">
-                    <a href="#">
-                        <img src="uploads/anhphu1.png" class="w-100 h-100" style="object-fit: cover; min-height: 120px;" alt="Banner Phụ 1">
+                    <div class="shopee-cat-text">Tất cả<br>sản phẩm</div>
+                </a>
+                 
+              
+                <!-- Loop các danh mục từ Database -->
+                <?php if (!empty($categories)): foreach($categories as $cat): 
+                    $border_color = (isset($_GET['cat_id']) && $_GET['cat_id'] == $cat['id']) ? 'border-color: #ee4d2d;' : '';
+                    $icon_src = !empty($cat['icon']) ? 'uploads/icons/' . $cat['icon'] : 'uploads/icons/default.png';                ?>
+                    <a href="index.php?controller=trang_chu&cat_id=<?php echo $cat['id']; ?>" class="shopee-cat-item">
+                        <div class="shopee-cat-img" style="<?php echo $border_color; ?>">
+                            <!-- Avatar tự tạo từ tên danh mục -->
+                            <img src="<?php echo $icon_src; ?>" alt="<?php echo $cat['name']; ?>" style="object-fit: contain;">
+                        </div>
+                        <div class="shopee-cat-text"><?php echo $cat['name']; ?></div>
                     </a>
-                </div>
-                <div class="rounded overflow-hidden shadow-sm flex-fill">
-                    <a href="#">
-                        <img src="uploads/anhphu2.png" class="w-100 h-100" style="object-fit: cover; min-height: 120px;" alt="Banner Phụ 2">
-                    </a>
-                </div>
+                <?php endforeach; endif; ?>
+                
             </div>
-        </div> 
+        </div>      
 
+        
         <?php if(!isset($_GET['q']) && !isset($_GET['cat_id']) && isset($res_top) && $res_top): ?>
         <div class="mb-5">
             <h4 class="text-uppercase border-bottom pb-2 border-danger text-danger">
@@ -90,8 +200,9 @@
         </div>
         <?php endif; ?>
 
-        <h4 class="text-uppercase border-bottom pb-2 border-secondary mb-3">
-            <?php echo isset($section_title) ? $section_title : "Sản Phẩm Mới"; ?>
+       
+        <h4 class="text-uppercase border-bottom pb-2 border-secondary mb-3 mt-4">
+            <?php echo isset($section_title) ? $section_title : 'Sản phẩm gợi ý'; ?>
         </h4>
 
         <div class="row">
@@ -101,7 +212,8 @@
                     $opacity = $is_out_of_stock ? "opacity: 0.6; filter: grayscale(100%);" : "";
                     $badge = $is_out_of_stock ? "<span class='badge bg-secondary position-absolute top-0 start-0 m-2 shadow-sm'>HẾT HÀNG</span>" : "";
                 ?>
-                <div class="col-md-4 col-sm-6 mb-4">
+                <!-- Sử dụng col-md-3 để hiện 4 sản phẩm / 1 hàng giống Shopee -->
+                <div class="col-md-3 col-sm-6 mb-4">
                     <div class="card h-100 shadow-sm product-card position-relative border-0">
                         <?php echo $badge; ?>
                         
@@ -158,33 +270,5 @@
             <?php endif; ?>
         </div>
         
-        <?php if (isset($total_pages) && $total_pages > 1): ?>
-        <nav aria-label="Page navigation" class="mt-4 mb-5">
-            <ul class="pagination justify-content-center">
-                
-                <li class="page-item <?php echo ($page <= 1) ? 'disabled' : ''; ?>">
-                    <a class="page-link" href="?controller=trang_chu&page=<?php echo $page - 1; ?><?php echo isset($_GET['cat_id']) ? '&cat_id='.$_GET['cat_id'] : ''; ?><?php echo isset($_GET['q']) ? '&q='.$_GET['q'] : ''; ?>" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
-                
-                <?php for($i = 1; $i <= $total_pages; $i++): ?>
-                <li class="page-item <?php echo ($page == $i) ? 'active' : ''; ?>">
-                    <a class="page-link" href="?controller=trang_chu&page=<?php echo $i; ?><?php echo isset($_GET['cat_id']) ? '&cat_id='.$_GET['cat_id'] : ''; ?><?php echo isset($_GET['q']) ? '&q='.$_GET['q'] : ''; ?>">
-                        <?php echo $i; ?>
-                    </a>
-                </li>
-                <?php endfor; ?>
-                
-                <li class="page-item <?php echo ($page >= $total_pages) ? 'disabled' : ''; ?>">
-                    <a class="page-link" href="?controller=trang_chu&page=<?php echo $page + 1; ?><?php echo isset($_GET['cat_id']) ? '&cat_id='.$_GET['cat_id'] : ''; ?><?php echo isset($_GET['q']) ? '&q='.$_GET['q'] : ''; ?>" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
-                
-            </ul>
-        </nav>
-        <?php endif; ?>
-
     </div>
 </div>

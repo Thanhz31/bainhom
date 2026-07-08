@@ -57,14 +57,16 @@
                     <td><strong class="text-primary"><?php echo $kh['full_name']; ?></strong></td>
                     <td class="text-center"><?php echo $kh['phone']; ?></td>
                     <td><?php echo $kh['address']; ?></td>
-                    <td class="text-center">
-                        <a href="index.php?controller=nguoi_dung&action=sua&id=<?php echo $kh['id']; ?>" class="btn btn-sm btn-warning mb-1 shadow-sm">
-                            <i class="fas fa-edit"></i> Sửa
-                        </a>
-                        <a href="index.php?controller=nguoi_dung&action=xoa&id=<?php echo $kh['id']; ?>" class="btn btn-sm btn-danger mb-1 shadow-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa khách hàng này?');">
-                            <i class="fas fa-trash-alt"></i> Xóa
-                        </a>
-                    </td>
+                   <td class="text-center">
+    <div class="d-flex justify-content-center gap-2">
+        <a href="index.php?controller=nguoi_dung&action=sua&id=<?php echo $kh['id']; ?>" class="btn btn-sm btn-warning text-dark shadow-sm px-2 py-1">
+            <i class="fas fa-edit"></i> Sửa
+        </a>
+        <a href="index.php?controller=nguoi_dung&action=xoa&id=<?php echo $kh['id']; ?>" class="btn btn-sm btn-danger shadow-sm px-2 py-1" onclick="return confirm('Bạn có chắc chắn muốn xóa khách hàng này?');">
+            <i class="fas fa-trash-alt"></i> Xóa
+        </a>
+    </div>
+</td>
                 </tr>
                 <?php endforeach; else: ?>
                     <tr><td colspan="6" class="text-center py-4 text-muted">Không tìm thấy người dùng nào khớp với từ khóa!</td></tr>

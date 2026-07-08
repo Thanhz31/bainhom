@@ -18,22 +18,36 @@ class DanhMucController {
     }
 
     // Hiển thị danh sách và Thêm danh mục mới
-    public function index() {
-        // Xử lý thêm danh mục (Đã thay lệnh INSERT bằng gọi Model)
-        if (isset($_POST['add_cat'])) {
-            $name = trim($_POST['name']);
-            $this->model->them($name);
-            header("Location: index.php?controller=danh_muc");
-            exit();
+    // Hiển thị danh sách và Thêm danh mục mới
+public function index() {
+    if (isset($_POST['add_cat'])) {
+        $name = trim($_POST['name']);
+        
+        // --- XỬ LÝ UPLOAD ICON ---
+        $icon_filename = ''; // Mặc định là rỗng
+        if (isset($_FILES['icon']) && $_FILES['icon']['error'] == 0) {
+            $target_dir = "uploads/icons/";
+            // Tạo tên file ngẫu nhiên để không bị trùng (vd: 1698765432_icon.png)
+            $icon_filename = time() . '_' . basename($_FILES["icon"]["name"]);
+            $target_file = $target_dir . $icon_filename;
+            
+            // Di chuyển file từ bộ nhớ tạm vào thư mục
+            move_uploaded_file($_FILES["icon"]["tmp_name"], $target_file);
         }
-        
-        // Lấy danh sách danh mục (Đã thay lệnh SELECT bằng gọi Model)
-        $categories = $this->model->layTatCa();
-        
-        require_once '../views/dung_chung/admin_header.php';
-        require_once '../views/quan_tri/danh_muc/index.php';
-        require_once '../views/dung_chung/admin_footer.php';
+        // -------------------------
+
+        // Cập nhật: Truyền thêm biến $icon_filename vào Model
+        $this->model->them($name, $icon_filename);
+        header("Location: index.php?controller=danh_muc");
+        exit();
     }
+    
+    $categories = $this->model->layTatCa();
+    
+    require_once '../views/dung_chung/admin_header.php';
+    require_once '../views/quan_tri/danh_muc/index.php';
+    require_once '../views/dung_chung/admin_footer.php';
+}
 
     // Xóa danh mục
     public function xoa() {
@@ -59,6 +73,38 @@ class DanhMucController {
         // Gọi view hiển thị danh sách sản phẩm (bạn cần tạo file này ở Bước 3)
         require_once '../views/dung_chung/admin_header.php';
         require_once '../views/quan_tri/danh_muc/danh_sach_san_pham.php';
+        require_once '../views/dung_chung/admin_footer.php';
+    }
+    // Chỉnh sửa danh mục
+    public function sua() {
+        $id = intval($_GET['id']);
+        // Lấy thông tin danh mục hiện tại để hiển thị ra form
+        $category = $this->model->layTheoId($id);
+
+        if (isset($_POST['edit_cat'])) {
+            $name = trim($_POST['name']);
+            $icon_filename = '';
+            
+            // Xử lý upload ảnh nếu người dùng có chọn file mới
+            if (isset($_FILES['icon']) && $_FILES['icon']['error'] == 0) {
+                $target_dir = "uploads/icons/"; // Trỏ thẳng vào gốc dự án như đã thống nhất
+                $icon_filename = time() . '_' . basename($_FILES["icon"]["name"]);
+                $target_file = $target_dir . $icon_filename;
+                
+                move_uploaded_file($_FILES["icon"]["tmp_name"], $target_file);
+            }
+
+            // Gọi model để lưu vào DB
+            $this->model->capNhat($id, $name, $icon_filename);
+            
+            // Sửa xong thì quay về trang danh sách
+            header("Location: index.php?controller=danh_muc");
+            exit();
+        }
+
+        // Gọi View hiển thị form sửa
+        require_once '../views/dung_chung/admin_header.php';
+        require_once '../views/quan_tri/danh_muc/sua.php'; // File này sẽ tạo ở Bước 4
         require_once '../views/dung_chung/admin_footer.php';
     }
 }
