@@ -144,33 +144,12 @@
                     </div>
                     <div class="shopee-cat-text">Tất cả<br>sản phẩm</div>
                 </a>
-                <?php 
-               $icon_map = [
-                 'thời trang nam' => 'uploads/icon-T.jpg',
-                 'thời trang nữ'  => 'uploads/icon-T-W.jpg',
-                 'Giày dép'       => 'uploads/icon-Shoe.jpg',
-                 'giày nữ'       => 'uploads/icon-Shoe-W.jpg',
-                 'Mũ'       => 'uploads/icon-hat.jpg',
-                 'quần áo cho bé'       => 'uploads/icon-baby.jpg',
-                 'Phụ kiện'       => 'uploads/icon-watch1.webp',
-                 'điện thoại'       => 'uploads/icon-phone1.jpg',
-                 'nhà sách online'       => 'uploads/icon-book.avif',
-                 'sắc đẹp'       => 'uploads/icon-son.jpg',
-                 'túi ví nữ'       => 'uploads/icon-P-W.webp',
-                 'đồ chơi'       => 'uploads/icon-toy1.jpg',
-                 'Mẹ và bé'       => 'uploads/icon-MB1.jpg',
-                 'balo & túi ví nam'       => 'uploads/icon-balo1.jpg',
-                 'dụng cụ và thiết bị tiện ích'       => 'uploads/icon-tool.jpg',
-                 'đồ điện gia dụng'       => 'uploads/icon-elec.jpg',
-                 'máy tính & laptop'       => 'uploads/icon-lap.webp',
-                 'máy ảnh & máy quay phim'       => 'uploads/icon-cam.webp',
-                 ];
-               ?>
+                 
+              
                 <!-- Loop các danh mục từ Database -->
                 <?php if (!empty($categories)): foreach($categories as $cat): 
                     $border_color = (isset($_GET['cat_id']) && $_GET['cat_id'] == $cat['id']) ? 'border-color: #ee4d2d;' : '';
-                    $icon_src = isset($icon_map[$cat['name']]) ? $icon_map[$cat['name']] : 'uploads/icons/default.png';
-                ?>
+                    $icon_src = !empty($cat['icon']) ? 'uploads/icons/' . $cat['icon'] : 'uploads/icons/default.png';                ?>
                     <a href="index.php?controller=trang_chu&cat_id=<?php echo $cat['id']; ?>" class="shopee-cat-item">
                         <div class="shopee-cat-img" style="<?php echo $border_color; ?>">
                             <!-- Avatar tự tạo từ tên danh mục -->

@@ -51,9 +51,15 @@
                 <td class="fw-bold"><?php echo $row['name']; ?></td>
                 <td class="text-danger fw-bold text-center"><?php echo number_format($row['price']); ?> ₫</td>
                 <td class="text-center">
-                    <a href="index.php?controller=san_pham&action=sua&id=<?php echo $row['id']; ?>" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Sửa</a>
-                    <a href="index.php?controller=san_pham&action=xoa&id=<?php echo $row['id']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn xóa?');"><i class="fas fa-trash"></i> Xóa</a>
-                </td>
+    <div class="d-flex justify-content-center gap-2">
+        <a href="index.php?controller=san_pham&action=sua&id=<?php echo $row['id']; ?>" class="btn btn-sm btn-warning text-dark shadow-sm px-2 py-1">
+            <i class="fas fa-edit"></i> Sửa
+        </a>
+        <a href="index.php?controller=san_pham&action=xoa&id=<?php echo $row['id']; ?>" class="btn btn-sm btn-danger shadow-sm px-2 py-1" onclick="return confirm('Bạn có chắc muốn xóa?');">
+            <i class="fas fa-trash-alt"></i> Xóa
+        </a>
+    </div>
+</td>
             </tr>
             <?php endforeach; else: ?>
                 <tr>

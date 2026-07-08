@@ -14,8 +14,9 @@ class DanhMucModel {
         return $this->db->query("SELECT * FROM categories WHERE name = '$name'");
     }
 
-    public function them($name) {
-        return $this->db->query("INSERT INTO categories (name) VALUES ('$name')");
+    // ĐÃ SỬA: Thêm tham số $icon vào hàm và câu lệnh SQL
+    public function them($name, $icon = '') {
+        return $this->db->query("INSERT INTO categories (name, icon) VALUES ('$name', '$icon')");
     }
 
     public function coSanPham($id) {
@@ -45,6 +46,17 @@ class DanhMucModel {
             }
         }
         return $data;
+    }
+    // Hàm cập nhật danh mục
+    public function capNhat($id, $name, $icon = '') {
+        $id = intval($id);
+        if (!empty($icon)) {
+            // Nếu có upload ảnh mới
+            return $this->db->query("UPDATE categories SET name = '$name', icon = '$icon' WHERE id = $id");
+        } else {
+            // Nếu không upload ảnh mới (giữ nguyên ảnh cũ)
+            return $this->db->query("UPDATE categories SET name = '$name' WHERE id = $id");
+        }
     }
 }
 ?>
