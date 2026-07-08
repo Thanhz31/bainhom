@@ -171,19 +171,18 @@
                  ];
                ?>
                 <!-- Loop các danh mục từ Database -->
-                <?php foreach($categories as $cat): 
+                <?php if (!empty($categories)): foreach($categories as $cat): 
                     $border_color = (isset($_GET['cat_id']) && $_GET['cat_id'] == $cat['id']) ? 'border-color: #ee4d2d;' : '';
-
                     $icon_src = isset($icon_map[$cat['name']]) ? $icon_map[$cat['name']] : 'uploads/icons/default.png';
                 ?>
                     <a href="index.php?controller=trang_chu&cat_id=<?php echo $cat['id']; ?>" class="shopee-cat-item">
                         <div class="shopee-cat-img" style="<?php echo $border_color; ?>">
                             <!-- Avatar tự tạo từ tên danh mục -->
-                             <img src="<?php echo $icon_src; ?>" alt="<?php echo $cat['name']; ?>" style="object-fit: contain;">
+                            <img src="<?php echo $icon_src; ?>" alt="<?php echo $cat['name']; ?>" style="object-fit: contain;">
                         </div>
                         <div class="shopee-cat-text"><?php echo $cat['name']; ?></div>
                     </a>
-                <?php endforeach; ?>
+                <?php endforeach; endif; ?>
                 
             </div>
         </div>      
@@ -191,7 +190,7 @@
         <!-- ====================================
              3. SẢN PHẨM GIÁ RẺ (FLASH SALE)
         ==================================== -->
-        <?php if(!isset($_GET['q']) && !isset($_GET['cat_id']) && $res_top): ?>
+        <?php if(!isset($_GET['q']) && !isset($_GET['cat_id']) && isset($res_top) && $res_top): ?>
         <div class="mb-5">
             <h4 class="text-uppercase border-bottom pb-2 border-danger text-danger">
                 <i class="fas fa-fire"></i> Sản Phẩm Giá rẻ
@@ -219,11 +218,11 @@
              4. DANH SÁCH SẢN PHẨM CHÍNH (GỢI Ý)
         ==================================== -->
         <h4 class="text-uppercase border-bottom pb-2 border-secondary mb-3 mt-4">
-            <?php echo $section_title; ?>
+            <?php echo isset($section_title) ? $section_title : 'Sản phẩm gợi ý'; ?>
         </h4>
 
         <div class="row">
-            <?php if ($products && $products->num_rows > 0): ?>
+            <?php if (isset($products) && $products && $products->num_rows > 0): ?>
                 <?php while($row = $products->fetch_assoc()): 
                     $is_out_of_stock = ($row['quantity'] <= 0);
                     $opacity = $is_out_of_stock ? "opacity: 0.6; filter: grayscale(100%);" : "";
