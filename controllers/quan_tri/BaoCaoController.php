@@ -16,51 +16,48 @@ class BaoCaoController {
             exit();
         }
     }
-    public function export() {
-        // 1. Lấy dữ liệu bán chạy
-        $list_sp = $this->model->getAllSanPhamBanChay();
 
-        // 2. Thiết lập header để trình duyệt hiểu đây là file Excel (CSV)
-        header('Content-Type: text/csv; charset=utf-8');
-        header('Content-Disposition: attachment; filename=bao_cao_kinh_doanh.csv');
-
-        // 3. Mở file đầu ra
-        $output = fopen('php://output', 'w');
-
-        // Thêm BOM để Excel đọc được tiếng Việt có dấu
-        fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
-
-        // 4. Tạo dòng tiêu đề cho file Excel
-        fputcsv($output, ['Tên sản phẩm', 'Đã bán', 'Doanh thu (VNĐ)']);
-
-        // 5. Đổ dữ liệu vào file
-        foreach ($list_sp as $sp) {
-            fputcsv($output, [
-                $sp['name'], 
-                $sp['sold_count'], 
-                $sp['revenue'] // Để định dạng số không dấu phẩy để Excel dễ tính toán
-            ]);
-        }
-        // 6. Đóng file
-        fclose($output);
-        exit; // Dừng lại ở đây, không load thêm giao diện gì nữa
-    }
     public function index() {
-        // 1. Lấy dữ liệu từ Model
-        $data_thang = $this->model->getDoanhThuTheoThang(); 
-        $top_sp = $this->model->getTopSanPhamBanChay();
-        $ton_kho = $this->model->getSanPhamTonKhoThap();
-        $tong_don_thanh_cong = $this->model->demDonThanhCong(); 
+        // 1. Lấy giá trị từ URL, nếu không có thì mặc định từ đầu tháng tới nay
+        $tu_ngay = $_GET['tu_ngay'] ?? date('Y-m-01');
+        $den_ngay = $_GET['den_ngay'] ?? date('Y-m-d');
 
-        // 2. TÍNH TOÁN DOANH THU TỔNG CHUẨN XÁC
-        $doanh_thu_tong = 0;
-        foreach ($data_thang as $item) {
-            $doanh_thu_tong += $item['revenue']; // Phải sửa thành 'revenue' khớp với Model
-        }
+        // 2. Gọi Model để lấy số liệu dựa trên khoảng thời gian
+        $doanh_thu_tong = $this->model->getDoanhThuTong($tu_ngay, $den_ngay);
+        $tong_don_thanh_cong = $this->model->demDonThanhCong($tu_ngay, $den_ngay);
+        $top_sp = $this->model->getTopSanPhamBanChay($tu_ngay, $den_ngay);
 
-        // 3. Gọi View
+        // 3. Đổ dữ liệu vào view
         require_once dirname(__DIR__, 2) . '/views/dung_chung/admin_header.php';
         require_once dirname(__DIR__, 2) . '/views/quan_tri/bao_cao/index.php';
         require_once dirname(__DIR__, 2) . '/views/dung_chung/admin_footer.php';
+    }
+
+    public function export() {
+        // 1. Lấy ngày từ URL
+        $tu_ngay = $_GET['tu_ngay'] ?? date('Y-m-01');
+        $den_ngay = $_GET['den_ngay'] ?? date('Y-m-d');
+
+        // 2. Lấy dữ liệu bán chạy theo khoảng thời gian
+        $list_sp = $this->model->getTopSanPhamBanChay($tu_ngay, $den_ngay);
+
+        // 3. Thiết lập header cho file CSV
+        header('Content-Type: text/csv; charset=utf-8');
+        header("Content-Disposition: attachment; filename=bao_cao_{$tu_ngay}_den_{$den_ngay}.csv");
+
+        $output = fopen('php://output', 'w');
+        // Thêm BOM để Excel hiển thị đúng tiếng Việt
+        fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF)); 
+
+        // 4. Tạo dòng tiêu đề, sử dụng dấu ; cho Excel tiếng Việt
+        fputcsv($output, ['Tên sản phẩm', 'Đã bán', 'Doanh thu (VNĐ)'], ';');
+
+        // 5. Đổ dữ liệu
+        foreach ($list_sp as $sp) {
+            fputcsv($output, [$sp['name'], $sp['sold_count'], $sp['revenue']], ';');
+        }
+        
+        fclose($output);
+        exit;
     }
 }
