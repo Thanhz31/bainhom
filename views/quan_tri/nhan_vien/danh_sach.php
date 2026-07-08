@@ -56,13 +56,15 @@
                         <span class="badge bg-secondary">Nhân viên kho/sale</span>
                     </td>
                     <td class="text-center">
-                        <a href="index.php?controller=nhan_vien&action=sua&id=<?php echo $nv['id']; ?>" class="btn btn-sm btn-primary me-1 shadow-sm">
-                            <i class="fas fa-edit"></i> Sửa
-                        </a>
-                        <a href="index.php?controller=nhan_vien&action=xoa&id=<?php echo $nv['id']; ?>" class="btn btn-sm btn-danger shadow-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa nhân viên này?');">
-                            <i class="fas fa-trash-alt"></i> Xóa
-                        </a>
-                    </td>
+    <div class="d-flex justify-content-center gap-2">
+        <a href="index.php?controller=nhan_vien&action=sua&id=<?php echo $nv['id']; ?>" class="btn btn-sm btn-warning text-dark shadow-sm px-2 py-1">
+            <i class="fas fa-edit"></i> Sửa
+        </a>
+        <a href="index.php?controller=nhan_vien&action=xoa&id=<?php echo $nv['id']; ?>" class="btn btn-sm btn-danger shadow-sm px-2 py-1" onclick="return confirm('Bạn có chắc chắn muốn xóa nhân viên này?');">
+            <i class="fas fa-trash-alt"></i> Xóa
+        </a>
+    </div>
+</td>
                 </tr>
                 <?php endforeach; else: ?>
                     <tr><td colspan="4" class="text-center py-4 text-muted">Không tìm thấy nhân viên nào khớp với từ khóa!</td></tr>
