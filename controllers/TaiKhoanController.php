@@ -121,6 +121,88 @@ class TaiKhoanController {
         require_once '../views/tai_khoan/chi_tiet_don_hang.php';
         require_once '../views/dung_chung/footer.php';
     }
-    
+    public function quen_mat_khau() {
+        $error = null;
+        $success = null;
+
+        if (isset($_POST['btn_submit_email'])) {
+            $username = $_POST['forgo_username'];
+            $email = $_POST['forgo_email'];
+
+            // 1. Kiểm tra tài khoản và email trùng khớp trong bảng `users` bằng MySQLi
+            $sql = "SELECT * FROM users WHERE username = ? AND email = ?";
+            $stmt = $this->db->prepare($sql);
+            $stmt->bind_param("ss", $username, $email);
+            $stmt->execute();
+            $result = $stmt->get_result();
+
+            if ($result && $result->num_rows > 0) {
+                
+                // 2. Nhúng thư viện PHPMailer từ thư mục libs
+                require_once '../libs/PHPMailer/Exception.php';
+                require_once '../libs/PHPMailer/PHPMailer.php';
+                require_once '../libs/PHPMailer/SMTP.php';
+
+                $mail = new PHPMailer(true);
+
+                try {
+                    // --- CẤU HÌNH MÁY CHỦ SMTP CỦA GOOGLE ---
+                    $mail->isSMTP();
+                    $mail->Host       = 'smtp.gmail.com';
+                    $mail->SMTPAuth   = true;
+                    
+                    // XỬ LÝ: Hãy điền thông tin Gmail và mã 16 ký tự mật khẩu ứng dụng của bạn vào đây
+                    $mail->Username   = 'sonenalymbph@gmail.com'; // <--- Thay bằng Gmail thật của bạn
+                    $mail->Password   = 'zpli pqwb bhcl ohos';    // <--- Thay bằng 16 ký tự mật khẩu ứng dụng bạn lấy được từ link trực tiếp
+                    
+                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                    $mail->Port       = 587;
+                    $mail->CharSet    = 'UTF-8'; // Giúp tiếng Việt hiển thị không bị lỗi font
+
+                    // Cấu hình người gửi và người nhận
+                    $mail->setFrom('sonenalymbph@gmail.com', 'Hệ Thống MYShop'); // Thay email gửi bằng gmail của bạn luôn
+                    $mail->addAddress($email); // Email người nhận (Lấy từ ô nhập của khách)
+
+                    // Tạo mật khẩu mới ngẫu nhiên gồm 6 chữ số
+                    $matKhauMoi = rand(100000, 999999);
+
+                    // Nội dung email định dạng HTML gửi cho khách
+                    $mail->isHTML(true);
+                    $mail->Subject = 'Khôi phục lại mật khẩu mới hệ thống MYShop';
+                    $mail->Body    = "
+                        <div style='font-family: Arial, sans-serif; padding: 20px; border: 1px solid #ddd; max-width: 500px; border-radius: 8px;'>
+                            <h3 style='color: #dc3545; text-align: center;'>YÊU CẦU CẤP LẠI MẬT KHẨU</h3>
+                            <p>Chào bạn <b>$username</b>,</p>
+                            <p>Hệ thống đã xác nhận thông tin của bạn thành công. Mật khẩu đăng nhập mới của bạn là:</p>
+                            <div style='background: #f8f9fa; padding: 15px; font-size: 24px; font-weight: bold; color: #dc3545; text-align: center; border: 1px dashed #dc3545; margin: 15px 0;'>
+                                $matKhauMoi
+                            </div>
+                            <p style='color: #6c757d; font-size: 13px;'><i>Vui lòng đăng nhập lại hệ thống bằng mật khẩu này và thực hiện đổi mật khẩu cá nhân mới ngay để bảo mật thông tin.</i></p>
+                        </div>
+                    ";
+
+                    // Thực hiện lệnh gửi thư đi
+                    $mail->send();
+
+                    // 3. Tiến hành cập nhật mật khẩu mới này vào bảng `users` trong database
+                    $sql_update = "UPDATE users SET password = ? WHERE username = ?";
+                    $stmt_update = $this->db->prepare($sql_update);
+                    $stmt_update->bind_param("ss", $matKhauMoi, $username);
+                    $stmt_update->execute();
+
+                    $success = "Hệ thống đã gửi mật khẩu mới vào hòm thư <b>$email</b>. Bạn hãy mở Gmail lên kiểm tra nhé!";
+                } catch (Exception $e) {
+                    $error = "Gửi thư thất bại. Lỗi kỹ thuật hệ thống: {$mail->ErrorInfo}";
+                }
+
+            } else {
+                $error = "Thông tin không chính xác! Tên đăng nhập hoặc Email không tồn tại trên hệ thống.";
+            }
+        }
+
+        // Gọi file giao diện hiển thị form lên màn hình
+        require_once '../views/tai_khoan/quen_mat_khau.php';
+    }
+
 }
 ?>
