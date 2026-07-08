@@ -58,15 +58,20 @@ class TrangChuController {
     public function chi_tiet() {
         $id = intval($_GET['id']);
         
-        // Gọi thẳng hàm layTheoId đã có sẵn trong SanPhamModel cũ của bạn
+        // 1. Gọi hàm lấy thông tin chi tiết sản phẩm
         $product = $this->sanPhamModel->layTheoId($id); 
         
+        // 2. GỌI HÀM LẤY BÌNH LUẬN TỪ MODEL
+        $reviews = $this->sanPhamModel->layBinhLuanTheoSanPham($id);
+        
+        // 3. Lấy danh mục để hiển thị thanh menu
         $cat_res = $this->danhMucModel->layTatCa();
         $categories = [];
         if ($cat_res) {
             while($c = $cat_res->fetch_assoc()) $categories[] = $c;
         }
         
+        // Đưa dữ liệu sang View
         require_once '../views/dung_chung/header.php';
         require_once '../views/trang_chu/chi_tiet.php';
         require_once '../views/dung_chung/footer.php';

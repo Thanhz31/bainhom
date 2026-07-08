@@ -6,14 +6,19 @@ class DonHangModel {
         $this->conn = $db;
     }
 
-    public function taoDonHang($user_id, $name, $phone, $address, $total) {
+    // ĐÃ SỬA CHỖ NÀY: Thêm tham số $payment_method (tham số thứ 6)
+    public function taoDonHang($user_id, $name, $phone, $address, $total, $payment_method) {
         $uid = $user_id ? intval($user_id) : "NULL";
         $name = $this->conn->real_escape_string($name);
         $phone = $this->conn->real_escape_string($phone);
         $address = $this->conn->real_escape_string($address);
+        
+        // Đảm bảo là số 1 hoặc 2
+        $payment_method = (int)$payment_method; 
 
-        $sql = "INSERT INTO orders (user_id, customer_name, customer_phone, customer_address, total_money) 
-                VALUES ($uid, '$name', '$phone', '$address', '$total')";
+        // ĐÃ SỬA CHỖ NÀY: Thêm cột payment_method vào câu lệnh SQL
+        $sql = "INSERT INTO orders (user_id, customer_name, customer_phone, customer_address, total_money, payment_method) 
+                VALUES ($uid, '$name', '$phone', '$address', '$total', $payment_method)";
         
         if ($this->conn->query($sql)) {
             return $this->conn->insert_id; 
@@ -127,7 +132,6 @@ class DonHangModel {
     // CÁC HÀM XỬ LÝ DỮ LIỆU BIỂU ĐỒ
     // ==========================================
     
-    // Lấy danh sách các năm có giao dịch để làm bộ lọc
     public function layCacNamCoDoanhThu() {
         $sql = "SELECT DISTINCT YEAR(created_at) as nam FROM orders WHERE status = 2 ORDER BY nam DESC";
         $result = $this->conn->query($sql);
@@ -137,14 +141,12 @@ class DonHangModel {
                 $years[] = $row['nam'];
             }
         }
-        // Nếu database chưa có đơn nào, mặc định trả về năm hiện tại
         if (empty($years)) {
             $years[] = date('Y');
         }
         return $years;
     }
 
-    // Lấy tổng doanh thu của từng tháng theo năm
     public function thongKeDoanhThuTheoThang($year = null) {
         if ($year == null) {
             $year = date('Y');
@@ -165,7 +167,6 @@ class DonHangModel {
         return $data;
     }
 
-    // Đếm số lượng đơn hàng theo từng trạng thái
     public function thongKeTrangThaiDonHang() {
         $sql = "SELECT status, COUNT(id) as so_luong FROM orders GROUP BY status";
         $result = $this->conn->query($sql);
@@ -176,6 +177,12 @@ class DonHangModel {
             }
         }
         return $data;
+    }
+
+    public function capNhatTrangThaiThanhToan($order_id, $status) {
+        $order_id = intval($order_id);
+        $status = intval($status); // 1 là đã thanh toán
+        return $this->conn->query("UPDATE orders SET payment_status = $status WHERE id = $order_id");
     }
 }
 ?>

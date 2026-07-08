@@ -40,5 +40,27 @@ class GioHangController {
         $this->gioHangService->xoaSanPham($id);
         header("Location: index.php?controller=gio_hang");
     }
+    // ==========================================
+    // [THÊM MỚI] Hàm cập nhật số lượng giỏ hàng
+    // ==========================================
+    public function cap_nhat() {
+        if (isset($_POST['qty']) && is_array($_POST['qty'])) {
+            // Duyệt qua mảng số lượng người dùng gửi lên
+            foreach ($_POST['qty'] as $id => $quantity) {
+                // Đảm bảo số lượng là số nguyên và lớn hơn 0
+                $qty = intval($quantity);
+                if ($qty > 0) {
+                     // Nếu bạn đã viết sẵn hàm capNhat trong GioHangComponent thì dùng nó
+                     // Ví dụ: $this->gioHangService->capNhat($id, $qty);
+                     
+                     // Hoặc cách phổ thông nếu không có hàm cập nhật riêng:
+                     $_SESSION['cart'][$id]['qty'] = $qty;
+                }
+            }
+        }
+        // Quay lại trang giỏ hàng sau khi tính toán xong
+        header("Location: index.php?controller=gio_hang");
+        exit();
+    }
 }
 ?>

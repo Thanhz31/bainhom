@@ -11,6 +11,7 @@ class TaiKhoanController {
         $this->db = (new Database())->getConnection();
         $this->taiKhoanService = new TaiKhoanComponent($this->db);
     }
+    
 
     // Giữ nguyên hàm đăng nhập của bạn
     public function dang_nhap() {
@@ -74,5 +75,52 @@ class TaiKhoanController {
         require_once '../views/tai_khoan/dang_ky.php';
         require_once '../views/dung_chung/footer.php';
     }
+     // <<< CHỨC NĂNG QUÊN MẬT KHẨU MỚI THÊM VÀO >>>
+
+    // Hàm xử lý hiển thị form và xác minh Quên mật khẩu
+    public function quen_mat_khau() {
+        $error = null;
+        $success = null;
+
+        // Nếu người dùng nhấn nút "forg_password" từ form
+        if (isset($_POST['forg_password'])) {
+            $username = $_POST['forgo_password']; // Sửa lại tên field cho khớp
+            // Logic xử lý kiểm tra (ví dụ minh họa):
+            // $user = $this->taiKhoanModel->checkForgot($_POST['forgo_password']);
+            // If success, logic to reset password...
+            // $success = "Xác minh thành công. Mật khẩu mặc định mới là: 123456";
+        }
+
+        require_once '../views/tai_khoan/quen_mat_khau.php';
+    }
+    // BẠN DÁN ĐOẠN NÀY VÀO TRONG CLASS TaiKhoanController
+    public function chi_tiet_don_hang() {
+        // 1. Kiểm tra đăng nhập
+        if (!isset($_SESSION['user'])) {
+            header("Location: index.php?controller=tai_khoan&action=dang_nhap");
+            exit();
+        }
+
+        // 2. Lấy ID đơn hàng từ URL
+        $order_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+        
+        // 3. Khởi tạo Service để lấy dữ liệu
+        $dhService = new DonHangComponent($this->db);
+        
+        // 4. Lấy thông tin đơn hàng và chi tiết đơn hàng
+        $order_info = $dhService->layChiTietDonHang($order_id);
+        $details = $dhService->layChiTietSanPhamDonHang($order_id);
+
+        // 5. Kiểm tra xem đơn hàng có thuộc về user này không (bảo mật)
+        if (!$order_info || $order_info['user_id'] != $_SESSION['user']['id']) {
+            die("Đơn hàng không tồn tại hoặc bạn không có quyền truy cập!");
+        }
+
+        // 6. Hiển thị view
+        require_once '../views/dung_chung/header.php';
+        require_once '../views/tai_khoan/chi_tiet_don_hang.php';
+        require_once '../views/dung_chung/footer.php';
+    }
+    
 }
 ?>

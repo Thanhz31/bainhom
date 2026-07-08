@@ -44,65 +44,73 @@
         </div>
 
         <div class="col-md-4">
-            
+            <!-- THÔNG TIN GIAO HÀNG -->
             <div class="card shadow-sm mb-3 border-0">
                 <div class="card-header bg-info text-white fw-bold">Thông tin giao hàng</div>
                 <div class="card-body">
                     <p class="mb-2"><strong>Người nhận:</strong> <span class="fw-bold text-dark"><?php echo $order_info['customer_name']; ?></span></p>
                     <p class="mb-2"><strong>SĐT:</strong> <span class="text-primary fw-bold"><?php echo $order_info['customer_phone']; ?></span></p>
                     <p class="mb-2"><strong>Địa chỉ:</strong> <small class="text-muted"><?php echo $order_info['customer_address']; ?></small></p>
-                    <p class="mb-0"><strong>Ngày đặt:</strong> <?php echo date("d/m/Y H:i", strtotime($order_info['created_at'])); ?></p>
+                    <p class="mb-2"><strong>Ngày đặt:</strong> <?php echo date("d/m/Y H:i", strtotime($order_info['created_at'])); ?></p>
+                    
+                    <p class="mb-2"><strong>Hình thức TT:</strong> 
+                        <?php 
+                        echo (isset($order_info['payment_method']) && (int)$order_info['payment_method'] === 2) 
+                             ? '<span class="badge bg-primary">Thanh toán Online</span>' 
+                             : '<span class="badge bg-secondary">Khi nhận hàng (COD)</span>'; 
+                        ?>
+                    </p>
+
+                    <!-- PHẦN TRẠNG THÁI TT ĐÃ SỬA: Đưa vào div d-flex để nằm ngang -->
+                    <div class="d-flex align-items-center gap-2">
+                        <strong>Trạng thái TT:</strong> 
+                        <?php 
+                        $pay_status = $order_info['payment_status'] ?? 0;
+                        if ($pay_status == 1) {
+                            echo '<span class="badge bg-success">Đã thanh toán</span>';
+                        } else {
+                            echo '<span class="badge bg-warning text-dark">Chưa thanh toán</span>';
+                            echo ' <form action="index.php?controller=don_hang&action=chi_tiet&id='.$order_info['id'].'" method="POST" class="m-0">
+                                    <input type="hidden" name="xac_nhan_thanh_toan" value="1">
+                                    <button type="submit" class="btn btn-sm btn-outline-success py-0 px-2" onclick="return confirm(\'Xác nhận đã nhận tiền?\')">
+                                        <i class="fas fa-check"></i> Xác nhận TT
+                                    </button>
+                                </form>';
+                        }
+                        ?>
+                    </div>
                 </div>
             </div>
             
+            <!-- CẬP NHẬT TRẠNG THÁI -->
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-warning text-dark fw-bold">Cập nhật trạng thái</div>
                 <div class="card-body">
-                    <?php 
-                    // NGUYÊN TẮC 3: Nếu đơn hàng đã giao (2) hoặc đã hủy (3) thì khóa giao diện
-                    if ($order_info['status'] == 2 || $order_info['status'] == 3): 
-                    ?>
+                    <?php if ($order_info['status'] == 2 || $order_info['status'] == 3): ?>
                         <div class="alert <?php echo ($order_info['status'] == 2) ? 'alert-success' : 'alert-danger'; ?> text-center fw-bold mb-3">
                             <i class="fas <?php echo ($order_info['status'] == 2) ? 'fa-check-circle' : 'fa-times-circle'; ?> fs-4 mb-1"></i><br>
                             <?php echo ($order_info['status'] == 2) ? 'ĐƠN HÀNG ĐÃ HOÀN TẤT' : 'ĐƠN HÀNG ĐÃ BỊ HỦY'; ?>
-                            <br><small class="fw-normal">Không thể thay đổi trạng thái</small>
                         </div>
-                        <a href="index.php?controller=don_hang" class="btn btn-outline-secondary w-100">
-                            <i class="fas fa-undo"></i> Quay lại danh sách
-                        </a>
-                    
-                    <?php 
-                    // Nếu đơn hàng đang ở mức Chờ duyệt (0) hoặc Đang giao (1) thì mở Form
-                    else: 
-                    ?>
+                        <a href="index.php?controller=don_hang" class="btn btn-outline-secondary w-100">Quay lại</a>
+                    <?php else: ?>
                         <form action="index.php?controller=don_hang&action=chi_tiet&id=<?php echo $order_info['id']; ?>" method="POST">
                             <select name="status" class="form-select mb-3 border-primary shadow-sm">
-                                
                                 <?php if ($order_info['status'] == 0): ?>
                                     <option value="0" selected>Chờ duyệt (Mới)</option>
                                     <option value="1">Đang giao hàng</option>
                                     <option value="2">Đã giao (Hoàn tất)</option>
                                     <option value="3">Hủy đơn</option>
-                                
                                 <?php elseif ($order_info['status'] == 1): ?>
                                     <option value="1" selected>Đang giao hàng</option>
                                     <option value="2">Đã giao (Hoàn tất)</option>
-                                    <option value="3">Hủy đơn (Khách bom hàng)</option>
+                                    <option value="3">Hủy đơn</option>
                                 <?php endif; ?>
-
                             </select>
-                            <button type="submit" name="update_status" class="btn btn-success w-100 fw-bold shadow-sm">
-                                <i class="fas fa-save"></i> CẬP NHẬT
-                            </button>
+                            <button type="submit" name="update_status" class="btn btn-success w-100 fw-bold shadow-sm">CẬP NHẬT</button>
                         </form>
-                        
-                        <a href="index.php?controller=don_hang" class="btn btn-outline-secondary w-100 mt-2 shadow-sm">
-                            <i class="fas fa-undo"></i> Quay lại danh sách
-                        </a>
                     <?php endif; ?>
                 </div>
             </div>
-
         </div>
     </div>
 </div>

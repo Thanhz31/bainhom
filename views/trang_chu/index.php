@@ -193,12 +193,25 @@
                 <?php while($row = $res_top->fetch_assoc()): ?>
                 <div class="col-md-3 col-6 mb-3">
                     <div class="card h-100 border-0 shadow-sm product-card">
-                        <a href="index.php?controller=trang_chu&action=chi_tiet&id=<?php echo $row['id']; ?>" target="_blank">
+                        <a href="index.php?controller=trang_chu&action=chi_tiet&id=<?php echo $row['id']; ?>">
                             <img src="uploads/<?php echo $row['image']; ?>" class="card-img-top p-2" style="height: 150px; object-fit: contain;">
                         </a>
-                        <div class="card-body p-2 text-center">
-                            <h6 class="card-title text-truncate"><a href="index.php?controller=trang_chu&action=chi_tiet&id=<?php echo $row['id']; ?>" class="text-decoration-none text-dark"><?php echo $row['name']; ?></a></h6>
-                            <p class="text-danger fw-bold mb-0"><?php echo number_format($row['price']); ?> ₫</p>
+                        <div class="card-body p-2 text-center d-flex flex-column">
+                            <h6 class="card-title text-truncate mb-1"><a href="index.php?controller=trang_chu&action=chi_tiet&id=<?php echo $row['id']; ?>" class="text-decoration-none text-dark"><?php echo $row['name']; ?></a></h6>
+                            
+                            <div class="d-flex justify-content-center align-items-center mb-1" style="font-size: 0.7rem;">
+                                <div class="text-warning me-1">
+                                    <?php 
+                                    $rating_top = isset($row['avg_rating']) ? round($row['avg_rating']) : 0; 
+                                    for ($i = 1; $i <= 5; $i++) {
+                                        echo ($i <= $rating_top) ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>';
+                                    }
+                                    ?>
+                                </div>
+                                <span class="text-muted fw-bold"><?php echo isset($row['avg_rating']) && $row['avg_rating'] > 0 ? number_format($row['avg_rating'], 1) : "0.0"; ?></span>
+                            </div>
+
+                            <p class="text-danger fw-bold mb-0 mt-auto"><?php echo number_format($row['price']); ?> ₫</p>
                             <small class="text-muted" style="font-size: 0.8rem;">Đã bán: <?php echo isset($row['sold_count']) ? $row['sold_count'] : 0; ?></small>
                         </div>
                     </div>
@@ -225,24 +238,40 @@
                     <div class="card h-100 shadow-sm product-card position-relative border-0">
                         <?php echo $badge; ?>
                         
-                        <a href="index.php?controller=trang_chu&action=chi_tiet&id=<?php echo $row['id']; ?>" target="_blank">
+                        <a href="index.php?controller=trang_chu&action=chi_tiet&id=<?php echo $row['id']; ?>">
                             <img src="uploads/<?php echo $row['image']; ?>" class="card-img-top" style="height: 220px; object-fit: cover; <?php echo $opacity; ?>">
                         </a>
                         
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title text-truncate" title="<?php echo $row['name']; ?>"><?php echo $row['name']; ?></h5>
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <span class="text-danger fw-bold fs-5"><?php echo number_format($row['price']); ?> ₫</span>
+                        <div class="card-body d-flex flex-column p-3">
+                            <h6 class="card-title text-truncate mb-2">
+                                <a href="index.php?controller=trang_chu&action=chi_tiet&id=<?php echo $row['id']; ?>" class="text-dark text-decoration-none">
+                                    <?php echo $row['name']; ?>
+                                </a>
+                            </h6>
+                            
+                            <div class="d-flex align-items-center mb-2" style="font-size: 0.8rem;">
+                                <div class="text-warning me-1">
+                                    <?php 
+                                    $rating = isset($row['avg_rating']) ? round($row['avg_rating']) : 0; 
+                                    for ($i = 1; $i <= 5; $i++) {
+                                        echo ($i <= $rating) ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>';
+                                    }
+                                    ?>
+                                </div>
+                                <span class="text-muted border-start ps-2 ms-1">
+                                    Đã bán: <?php echo isset($row['sold_count']) ? $row['sold_count'] : 0; ?>
+                                </span>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center mt-auto mb-3">
+                                <span class="text-danger fw-bold fs-6"><?php echo number_format($row['price']); ?> ₫</span>
                                 <small class="text-muted" style="font-size: 0.85rem;">
-                                    <?php echo $is_out_of_stock ? "Tạm hết" : "Kho: " . $row['quantity']; ?>
+                                    Kho: <?php echo $row['quantity']; ?>
                                 </small>
                             </div>
                             
-                            <form action="index.php?controller=gio_hang&action=them" method="POST" class="mt-auto">
+                            <form action="index.php?controller=gio_hang&action=them" method="POST" class="w-100">
                                 <input type="hidden" name="product_id" value="<?php echo $row['id']; ?>">
-                                <input type="hidden" name="product_name" value="<?php echo $row['name']; ?>">
-                                <input type="hidden" name="product_price" value="<?php echo $row['price']; ?>">
-                                <input type="hidden" name="product_image" value="<?php echo $row['image']; ?>">
                                 <input type="hidden" name="qty" value="1">
                                 
                                 <button type="submit" name="add_to_cart" class="btn btn-outline-danger w-100 rounded-pill" <?php if($is_out_of_stock) echo 'disabled'; ?>>
