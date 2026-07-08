@@ -100,9 +100,7 @@
 <div class="row">
     <div class="col-12">
         
-        <!-- ====================================
-             1. KHUNG BANNER TỶ LỆ 8:4 GỌN GÀNG
-        ==================================== -->
+     
         <div class="row g-2 banner-container mb-4">
     <div class="col-md-8 h-100">
         <div id="bannerKhuyenMai" class="carousel slide h-100 shadow-sm" data-bs-ride="carousel">
@@ -131,9 +129,7 @@
     </div>
 </div>
 
-        <!-- ====================================
-             2. LƯỚI DANH MỤC 2 HÀNG KIỂU SHOPEE
-        ==================================== -->
+      
         <div class="shopee-cat-container position-relative">
             <div class="shopee-cat-header">DANH MỤC</div>
            
@@ -187,9 +183,7 @@
             </div>
         </div>      
 
-        <!-- ====================================
-             3. SẢN PHẨM GIÁ RẺ (FLASH SALE)
-        ==================================== -->
+        
         <?php if(!isset($_GET['q']) && !isset($_GET['cat_id']) && isset($res_top) && $res_top): ?>
         <div class="mb-5">
             <h4 class="text-uppercase border-bottom pb-2 border-danger text-danger">
@@ -214,9 +208,7 @@
         </div>
         <?php endif; ?>
 
-        <!-- ====================================
-             4. DANH SÁCH SẢN PHẨM CHÍNH (GỢI Ý)
-        ==================================== -->
+       
         <h4 class="text-uppercase border-bottom pb-2 border-secondary mb-3 mt-4">
             <?php echo isset($section_title) ? $section_title : 'Sản phẩm gợi ý'; ?>
         </h4>
