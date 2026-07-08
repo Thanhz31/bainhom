@@ -40,6 +40,7 @@
                 <th>Hình ảnh</th>
                 <th>Tên sản phẩm</th>
                 <th>Giá</th>
+                <th>Tồn kho</th> <!-- thêm cột tồn kho -->
                 <th>Hành động</th>
             </tr>
         </thead>
@@ -50,6 +51,7 @@
                 <td class="text-center"><img src="uploads/<?php echo $row['image']; ?>" width="50" class="rounded border"></td>
                 <td class="fw-bold"><?php echo $row['name']; ?></td>
                 <td class="text-danger fw-bold text-center"><?php echo number_format($row['price']); ?> ₫</td>
+                <td class="text-center text-primary fw-bold"><?php echo $row['quantity']; ?></td> <!-- hiển thị tồn kho -->
                 <td class="text-center">
                     <a href="index.php?controller=san_pham&action=sua&id=<?php echo $row['id']; ?>" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Sửa</a>
                     <a href="index.php?controller=san_pham&action=xoa&id=<?php echo $row['id']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn xóa?');"><i class="fas fa-trash"></i> Xóa</a>
@@ -57,7 +59,7 @@
             </tr>
             <?php endforeach; else: ?>
                 <tr>
-                    <td colspan="5" class="text-center py-4 text-muted">Không tìm thấy sản phẩm nào khớp với từ khóa!</td>
+                    <td colspan="6" class="text-center py-4 text-muted">Không tìm thấy sản phẩm nào khớp với từ khóa!</td>
                 </tr>
             <?php endif; ?>
         </tbody>
