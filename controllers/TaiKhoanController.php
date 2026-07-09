@@ -1,4 +1,7 @@
 <?php
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
 require_once '../services/TaiKhoanComponent.php';
 require_once '../services/DonHangComponent.php';
 require_once '../models/NguoiDungModel.php'; 
@@ -12,8 +15,7 @@ class TaiKhoanController {
         $this->taiKhoanService = new TaiKhoanComponent($this->db);
     }
     
-
-    // Giữ nguyên hàm đăng nhập của bạn
+    // Hàm đăng nhập
     public function dang_nhap() {
         if (isset($_POST['login'])) {
             $res = $this->taiKhoanService->dangNhap($_POST['username'], $_POST['password']);
@@ -27,13 +29,13 @@ class TaiKhoanController {
         require_once '../views/tai_khoan/dang_nhap.php';
     }
 
-    // Giữ nguyên hàm đăng xuất của bạn
+    // Hàm đăng xuất
     public function dang_xuat() {
         $this->taiKhoanService->dangXuat();
         header("Location: index.php");
     }
 
-    // Giữ nguyên hàm xem đơn hàng của bạn
+    // Hàm xem đơn hàng
     public function don_hang() {
         if (!isset($_SESSION['user'])) header("Location: index.php?controller=tai_khoan&action=dang_nhap");
         
@@ -45,7 +47,7 @@ class TaiKhoanController {
         require_once '../views/dung_chung/footer.php';
     }
 
-    // Hàm đăng ký đã được làm sạch SQL
+    // Hàm đăng ký tài khoản mới có nhận thêm Email
     public function dang_ky() {
         $error = ''; 
 
@@ -53,6 +55,7 @@ class TaiKhoanController {
             $username = $_POST['username'];
             $password = $_POST['password']; 
             $full_name = $_POST['full_name'];
+            $email     = $_POST['email']; 
             $phone = $_POST['phone'];
             $address = $_POST['address'];
 
@@ -61,7 +64,7 @@ class TaiKhoanController {
             if ($nguoiDungModel->kiemTraTenDangNhapTonTai($username)) {
                 $error = "Tên đăng nhập này đã có người sử dụng. Vui lòng chọn tên khác!";
             } else {
-                if ($nguoiDungModel->dangKy($username, $password, $full_name, $phone, $address)) {
+                if ($nguoiDungModel->dangKy($username, $password, $full_name, $email, $phone, $address)) {
                     echo "<script>
                             alert('Chúc mừng bạn đã đăng ký tài khoản thành công!'); 
                             window.location.href='index.php?controller=tai_khoan&action=dang_nhap';
@@ -75,52 +78,8 @@ class TaiKhoanController {
         require_once '../views/tai_khoan/dang_ky.php';
         require_once '../views/dung_chung/footer.php';
     }
-     // <<< CHỨC NĂNG QUÊN MẬT KHẨU MỚI THÊM VÀO >>>
 
-    // Hàm xử lý hiển thị form và xác minh Quên mật khẩu
-    public function quen_mat_khau() {
-        $error = null;
-        $success = null;
-
-        // Nếu người dùng nhấn nút "forg_password" từ form
-        if (isset($_POST['forg_password'])) {
-            $username = $_POST['forgo_password']; // Sửa lại tên field cho khớp
-            // Logic xử lý kiểm tra (ví dụ minh họa):
-            // $user = $this->taiKhoanModel->checkForgot($_POST['forgo_password']);
-            // If success, logic to reset password...
-            // $success = "Xác minh thành công. Mật khẩu mặc định mới là: 123456";
-        }
-
-        require_once '../views/tai_khoan/quen_mat_khau.php';
-    }
-    // BẠN DÁN ĐOẠN NÀY VÀO TRONG CLASS TaiKhoanController
-    public function chi_tiet_don_hang() {
-        // 1. Kiểm tra đăng nhập
-        if (!isset($_SESSION['user'])) {
-            header("Location: index.php?controller=tai_khoan&action=dang_nhap");
-            exit();
-        }
-
-        // 2. Lấy ID đơn hàng từ URL
-        $order_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
-        
-        // 3. Khởi tạo Service để lấy dữ liệu
-        $dhService = new DonHangComponent($this->db);
-        
-        // 4. Lấy thông tin đơn hàng và chi tiết đơn hàng
-        $order_info = $dhService->layChiTietDonHang($order_id);
-        $details = $dhService->layChiTietSanPhamDonHang($order_id);
-
-        // 5. Kiểm tra xem đơn hàng có thuộc về user này không (bảo mật)
-        if (!$order_info || $order_info['user_id'] != $_SESSION['user']['id']) {
-            die("Đơn hàng không tồn tại hoặc bạn không có quyền truy cập!");
-        }
-
-        // 6. Hiển thị view
-        require_once '../views/dung_chung/header.php';
-        require_once '../views/tai_khoan/chi_tiet_don_hang.php';
-        require_once '../views/dung_chung/footer.php';
-    }
+    // Hàm quên mật khẩu chuẩn (Chỉ xuất hiện đúng 1 lần duy nhất)
     public function quen_mat_khau() {
         $error = null;
         $success = null;
@@ -129,7 +88,6 @@ class TaiKhoanController {
             $username = $_POST['forgo_username'];
             $email = $_POST['forgo_email'];
 
-            // 1. Kiểm tra tài khoản và email trùng khớp trong bảng `users` bằng MySQLi
             $sql = "SELECT * FROM users WHERE username = ? AND email = ?";
             $stmt = $this->db->prepare($sql);
             $stmt->bind_param("ss", $username, $email);
@@ -138,7 +96,6 @@ class TaiKhoanController {
 
             if ($result && $result->num_rows > 0) {
                 
-                // 2. Nhúng thư viện PHPMailer từ thư mục libs
                 require_once '../libs/PHPMailer/Exception.php';
                 require_once '../libs/PHPMailer/PHPMailer.php';
                 require_once '../libs/PHPMailer/SMTP.php';
@@ -146,27 +103,23 @@ class TaiKhoanController {
                 $mail = new PHPMailer(true);
 
                 try {
-                    // --- CẤU HÌNH MÁY CHỦ SMTP CỦA GOOGLE ---
                     $mail->isSMTP();
                     $mail->Host       = 'smtp.gmail.com';
                     $mail->SMTPAuth   = true;
                     
-                    // XỬ LÝ: Hãy điền thông tin Gmail và mã 16 ký tự mật khẩu ứng dụng của bạn vào đây
-                    $mail->Username   = 'sonenalymbph@gmail.com'; // <--- Thay bằng Gmail thật của bạn
-                    $mail->Password   = 'zpli pqwb bhcl ohos';    // <--- Thay bằng 16 ký tự mật khẩu ứng dụng bạn lấy được từ link trực tiếp
+                    // Bạn điền lại thông tin tài khoản Gmail hệ thống của bạn ở đây:
+                    $mail->Username   = 'sonenalymbph@gmail.com'; 
+                    $mail->Password   = 'zpli pqwb bhcl ohos';    
                     
                     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
                     $mail->Port       = 587;
-                    $mail->CharSet    = 'UTF-8'; // Giúp tiếng Việt hiển thị không bị lỗi font
+                    $mail->CharSet    = 'UTF-8';
 
-                    // Cấu hình người gửi và người nhận
-                    $mail->setFrom('sonenalymbph@gmail.com', 'Hệ Thống MYShop'); // Thay email gửi bằng gmail của bạn luôn
-                    $mail->addAddress($email); // Email người nhận (Lấy từ ô nhập của khách)
+                    $mail->setFrom('sonenalymbph@gmail.com', 'Hệ Thống MYShop'); 
+                    $mail->addAddress($email); 
 
-                    // Tạo mật khẩu mới ngẫu nhiên gồm 6 chữ số
                     $matKhauMoi = rand(100000, 999999);
 
-                    // Nội dung email định dạng HTML gửi cho khách
                     $mail->isHTML(true);
                     $mail->Subject = 'Khôi phục lại mật khẩu mới hệ thống MYShop';
                     $mail->Body    = "
@@ -181,10 +134,8 @@ class TaiKhoanController {
                         </div>
                     ";
 
-                    // Thực hiện lệnh gửi thư đi
                     $mail->send();
 
-                    // 3. Tiến hành cập nhật mật khẩu mới này vào bảng `users` trong database
                     $sql_update = "UPDATE users SET password = ? WHERE username = ?";
                     $stmt_update = $this->db->prepare($sql_update);
                     $stmt_update->bind_param("ss", $matKhauMoi, $username);
@@ -200,9 +151,7 @@ class TaiKhoanController {
             }
         }
 
-        // Gọi file giao diện hiển thị form lên màn hình
         require_once '../views/tai_khoan/quen_mat_khau.php';
     }
-
 }
 ?>
