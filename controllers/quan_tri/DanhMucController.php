@@ -28,7 +28,7 @@ public function index() {
         if (isset($_FILES['icon']) && $_FILES['icon']['error'] == 0) {
             $target_dir = "uploads/icons/";
             // Tạo tên file ngẫu nhiên để không bị trùng (vd: 1698765432_icon.png)
-            $icon_filename = time() . '_' . basename($_FILES["icon"]["name"]);
+            $icon_filename = basename($_FILES["icon"]["name"]);
             $target_file = $target_dir . $icon_filename;
             
             // Di chuyển file từ bộ nhớ tạm vào thư mục
@@ -88,7 +88,7 @@ public function index() {
             // Xử lý upload ảnh nếu người dùng có chọn file mới
             if (isset($_FILES['icon']) && $_FILES['icon']['error'] == 0) {
                 $target_dir = "uploads/icons/"; // Trỏ thẳng vào gốc dự án như đã thống nhất
-                $icon_filename = time() . '_' . basename($_FILES["icon"]["name"]);
+                $icon_filename = basename($_FILES["icon"]["name"]);
                 $target_file = $target_dir . $icon_filename;
                 
                 move_uploaded_file($_FILES["icon"]["tmp_name"], $target_file);
