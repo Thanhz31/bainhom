@@ -34,15 +34,18 @@ class NguoiDungModel {
     }
 
     // Hàm đăng ký
-    public function dangKy($username, $password, $fullname, $phone, $address) {
+// Hàm đăng ký (Đã bổ sung thêm trường email)
+    public function dangKy($username, $email, $password, $fullname, $phone, $address) {
         $u = $this->conn->real_escape_string($username);
+        $e = $this->conn->real_escape_string($email); // Nhận email
         $p = $this->conn->real_escape_string($password);
         $f = $this->conn->real_escape_string($fullname);
         $ph = $this->conn->real_escape_string($phone);
         $ad = $this->conn->real_escape_string($address);
         
-        $sql = "INSERT INTO users (username, password, full_name, phone, address) 
-                VALUES ('$u', '$p', '$f', '$ph', '$ad')";
+        // Đưa email vào câu lệnh INSERT
+        $sql = "INSERT INTO users (username, email, password, full_name, phone, address) 
+                VALUES ('$u', '$e', '$p', '$f', '$ph', '$ad')";
         return $this->conn->query($sql);
     }
 
